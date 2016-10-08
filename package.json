@@ -1,0 +1,27 @@
+{
+  "name": "top_secret",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "styles": "stylus -u autoprefixer-stylus -m 'app/css/styles.styl'",
+    "styles:watch": "npm run styles -- -w",
+    "server": "node server.js",
+    "start": "npm run server & npm run styles:watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer-stylus": "^0.10.0",
+    "browser-sync": "^2.17.0",
+    "connect-history-api-fallback": "^1.3.0",
+    "stylus": "^0.54.5"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "firebase": "^3.4.1",
+    "jquery": "^3.1.1",
+    "page": "^1.7.1"
+  }
+}
