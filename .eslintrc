@@ -10,6 +10,7 @@
     "firebase": true,
     "page": true,
     "jQuery": true,
+    "Handlebars": true,
     "$": true
   },
   "parserOptions": {

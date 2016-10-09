@@ -1,21 +1,16 @@
 (() => {
 
-  const { checkAuth } = App.auth;
-
   const {
-    checkUserController,
-    loginController
+    authController,
+    userController,
+    loginController,
+    mainController
   } = App.controllers;
 
+  page('*', authController);
+  page('/', mainController);
   page('/login', loginController);
-
-  page('*', checkUserController);
-
-  page('/account', (ctx) => console.log(ctx.currentUser));
-
-
-  // page('*', '/login');
-
+  page('/user', userController);
   page();
 
 })();

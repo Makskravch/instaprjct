@@ -1,32 +1,18 @@
 (() => {
 
   const App = window.App = {
-    rootContainer: $('#page-content'),
-    fetchingView: false,
+    rootElement: document.getElementById('page-content'),
     controllers: {},
-
-    getView(view) {
-      this.fetchingView = true;
-      return fetch(`views/${view}.html`)
-        .then(res => {
-          this.fetchingView = false;
-          return res.text();
-        })
-        .catch(err => {
-          throw new Error(`Failed to fetch view "${view}"`);
-        });
-    },
 
     addController(name, fn) {
       this.controllers[`${name}Controller`] = fn;
     },
 
-    renderView(view) {
-      return this.getView(view)
-        .then(html => {
-          this.rootContainer.html(html);
-          return this;
-        });
+    render(html = '') {
+      if (typeof html !== 'string') {
+        throw new TypeError('App.render() takes only string as parameter');
+      }
+      this.rootElement.innerHTML = html;
     }
   };
 

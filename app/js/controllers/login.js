@@ -1,22 +1,20 @@
 (() => {
 
-  App.addController('login', (ctx, next) => {
+  App.addController('login', (ctx) => {
 
-    App.renderView('login-form').then(() => {
+    App.fetchTemplate('login').then(tpl => {
 
-      const auth = firebase.auth();
+      App.render(tpl(ctx));
 
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          ctx.currentUser = user;
-          return page('/account');
-        } else {
-          alert('something going wrong');
-        }
-      });
-
-      document.forms['login-form'].addEventListener('submit', (e) => {
+      // auth.onAuthStateChanged((user) => {
+      //   if (user) {
+      //     return page('/user');
+      //   }
+      // });
+      // document.forms['login-form'] &&
+      !ctx.user && document.forms['login-form'].addEventListener('submit', (e) => {
         const form = e.target;
+        const auth = firebase.auth();
         const { email, password } = form.elements;
         let errors = 0;
 
@@ -39,10 +37,9 @@
         if (errors) {
           return alert('Form has invalid data');
         } else {
-          auth.signInWithEmailAndPassword(email.value, password.value);
+          auth.signInWithEmailAndPassword(email.value, password.value).then(res => console.log(res));
         }
       });
-
     });
 
   });
