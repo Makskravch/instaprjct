@@ -1,0 +1,13 @@
+{
+  "libs": [
+    "browser",
+    "jquery"
+  ],
+  "loadEagerly": [],
+  "plugins": {
+    "node": true
+  },
+  "exclude": [
+    "node_modules/**"
+  ]
+}

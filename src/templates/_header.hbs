@@ -20,7 +20,12 @@
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown" id="current-user">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            {{ user.displayName }} <span class="caret"></span>
+            {{#if user.displayName}}
+            {{ user.displayName }}
+            {{else}}
+            {{ user.email }}
+            {{/if}}
+            <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
             <li><a href="/logout">Logout</a></li>

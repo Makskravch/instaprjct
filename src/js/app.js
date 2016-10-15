@@ -1,11 +1,10 @@
 (() => {
 
   const App = window.App = {
-    rootElement: document.getElementById('page-content'),
     controllers: {},
 
     addController(name, fn) {
-      this.controllers[`${name}Controller`] = fn;
+      this.controllers[name] = fn;
     },
 
     render(html = '') {
