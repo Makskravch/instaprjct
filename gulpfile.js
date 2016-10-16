@@ -4,6 +4,8 @@ const postcss      = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 const sourcemaps   = require('gulp-sourcemaps');
 const concat       = require('gulp-concat');
+const include      = require('gulp-include');
+const order        = require('gulp-order');
 const gutil        = require('gulp-util');
 const plumber      = require('gulp-plumber');
 const notify       = require('gulp-notify');
@@ -39,7 +41,7 @@ gulp.task('server', () => {
       'public/js/**/*.js',
       'public/**/*.html'
     ],
-    open: true,
+    open: gutil.env.open !== false,
     ghostMode: false,
     middleware: [
       require('connect-history-api-fallback')()
@@ -62,11 +64,10 @@ gulp.task('styles', () => {
 
 gulp.task('scripts', () => {
   return gulp
-    .src('src/js/**/*.js')
+    .src('src/js/app.js')
     .pipe(errorHandler())
     .pipe(sourcemaps.init())
-    .pipe(cache('scripts'))
-    .pipe(concat('bundle.js'))
+    .pipe(include())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('public/js'));
 });
@@ -78,7 +79,6 @@ gulp.task('templates', () => {
   const partials = gulp
     .src('src/templates/**/_*.hbs')
     .pipe(errorHandler())
-    .pipe(cache('templates:partials'))
     .pipe(handlebars({
       handlebars: hbs
     }))
@@ -94,13 +94,12 @@ gulp.task('templates', () => {
   const templates = gulp
     .src('src/templates/**/[^_]*.hbs')
     .pipe(errorHandler())
-    .pipe(cache('templates'))
     .pipe(handlebars({
       handlebars: hbs
     }))
     .pipe(wrap('Handlebars.template(<%= contents %>)'))
     .pipe(declare({
-      namespace: 'App.templates',
+      namespace: 'templates',
       noRedeclare: true
     }));
 
