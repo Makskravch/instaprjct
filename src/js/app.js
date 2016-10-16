@@ -1,26 +1,66 @@
 (() => {
 
-  const App = window.App = {
-    controllers: {},
+  //=require 'modules/helpers.js'
+  //=require 'routes/*.js'
 
-    addController(name, fn) {
-      this.controllers[name] = fn;
-    },
+  const { location, history, helpers, templates } = window;
+  const { qs, qsa } = helpers;
+  const rootElement = qs('#root');
 
-    render(html = '') {
-      if (typeof html !== 'string') {
-        throw new TypeError('App.render() takes only string as parameter');
-      }
-      this.rootElement.innerHTML = html;
-    }
+  const routes = {
+    '/': main,
+    '/login': login,
+    '/logout': logout,
+    '/user': user
   };
 
-  firebase.initializeApp({
-    apiKey: 'AIzaSyDdklaao0vq0DcAkCXzYFoZeVJTy9kOoGA',
-    authDomain: 'prjctr-84d57.firebaseapp.com',
-    databaseURL: 'https://prjctr-84d57.firebaseio.com',
-    storageBucket: 'prjctr-84d57.appspot.com',
-    messagingSenderId: '459426391837'
-  });
+  function notFoundRoute() {
+    renderTemplate('404');
+  }
+
+  function renderTemplate(templateName, data = {}) {
+    const user    = firebase.auth().currentUser;
+    const tplData = Object.assign({ user }, data);
+    rootElement.innerHTML = templates[templateName](tplData);
+  }
+
+  function navigateTo(path, state = null) {
+    history.pushState(state, '', path);
+    render();
+  }
+
+  function redirectTo(path, state = null) {
+    history.replaceState(state, '', path);
+    render();
+  }
+
+  function checkUser() {
+    if (!firebase.auth().currentUser) {
+      redirectTo('/login');
+    }
+  }
+
+  function render() {
+    const route = routes[location.pathname];
+    console.log(location.pathname, route);
+    if (typeof route === 'function') {
+      return route();
+    }
+    notFoundRoute();
+  }
+
+  function onClick(e) {
+    if (
+      e.target.tagName !== 'A'
+      || e.target.pathname === location.pathname
+    ) return;
+    e.preventDefault();
+    navigateTo(e.target.pathname);
+  }
+
+  window.addEventListener('popstate', render);
+  document.addEventListener('click', onClick);
+
+  render();
 
 })();

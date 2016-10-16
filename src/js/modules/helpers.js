@@ -1,7 +1,5 @@
 (() => {
 
-  const App = window.App || {};
-
   /**
    * Get DOM element by selector
    * @param  {String} selector
@@ -30,7 +28,7 @@
   /**
    * Export helper functions
    */
-  App.helpers = {
+  window.helpers = {
     qs,
     qsa,
     isDomElement
