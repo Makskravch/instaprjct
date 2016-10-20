@@ -1,66 +1,78 @@
 (() => {
 
-  //=require 'modules/helpers.js'
+  firebase.initializeApp({
+    apiKey: 'AIzaSyDdklaao0vq0DcAkCXzYFoZeVJTy9kOoGA',
+    authDomain: 'prjctr-84d57.firebaseapp.com',
+    databaseURL: 'https://prjctr-84d57.firebaseio.com',
+    storageBucket: 'prjctr-84d57.appspot.com',
+    messagingSenderId: '459426391837'
+  });
+
+  //=require 'helpers.js'
   //=require 'routes/*.js'
 
-  const { location, history, helpers, templates } = window;
-  const { qs, qsa } = helpers;
+  const { location, history, templates } = window;
   const rootElement = qs('#root');
+  const unlockedPaths = [
+    '/',
+    '/login',
+    '/signup'
+  ];
 
-  const routes = {
-    '/': main,
-    '/login': login,
-    '/logout': logout,
-    '/user': user
-  };
-
-  function notFoundRoute() {
-    renderTemplate('404');
+  function getUserData(currentUser) {
+    if (!currentUser) return null;
+    return pick(currentUser, [
+      'displayName',
+      'email',
+      'photoURL',
+      'isAnonymous',
+      'emailVerified',
+      'uid',
+      'someProp'
+    ]);
   }
 
-  function renderTemplate(templateName, data = {}) {
-    const user    = firebase.auth().currentUser;
-    const tplData = Object.assign({ user }, data);
-    rootElement.innerHTML = templates[templateName](tplData);
+  function render(tplName, data = {}) {
+    const user = firebase.auth().currentUser;
+    data = Object.assign(data, { user: getUserData(user) });
+    rootElement.innerHTML = templates[tplName](data);
   }
 
-  function navigateTo(path, state = null) {
-    history.pushState(state, '', path);
-    render();
+  function render404() {
+    render('404');
   }
 
-  function redirectTo(path, state = null) {
-    history.replaceState(state, '', path);
-    render();
-  }
-
-  function checkUser() {
-    if (!firebase.auth().currentUser) {
-      redirectTo('/login');
+  function auth(ctx, next) {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      ctx.user = pick(user, [
+        'displayName',
+        'email',
+        'photoURL',
+        'isAnonymous',
+        'emailVerified',
+        'uid',
+        'someProp'
+      ]);
+      return next();
+    } else if (!unlockedPaths.includes(ctx.pathname)) {
+      page('/login');
     }
+    next();
   }
 
-  function render() {
-    const route = routes[location.pathname];
-    console.log(location.pathname, route);
-    if (typeof route === 'function') {
-      return route();
-    }
-    notFoundRoute();
-  }
+  page('*', auth);
+  page('/', main);
+  page('/login', login);
+  page('/logout', logout);
+  page('/signup', signup);
+  page('/user', user);
+  page('*', render404);
 
-  function onClick(e) {
-    if (
-      e.target.tagName !== 'A'
-      || e.target.pathname === location.pathname
-    ) return;
-    e.preventDefault();
-    navigateTo(e.target.pathname);
-  }
-
-  window.addEventListener('popstate', render);
-  document.addEventListener('click', onClick);
-
-  render();
+  // simulate firebase 'onready' behavior
+  const unsubsribe = firebase.auth().onAuthStateChanged(() => {
+    page();
+    unsubsribe();
+  });
 
 })();

@@ -1,0 +1,27 @@
+.f
+  $this = selector()
+
+  &
+  &-box
+  &-grid
+  &-fill
+    display flex
+
+  &-fill
+    > *
+      flex 1 0 auto
+
+  &-align
+    $base = selector()
+    /
+      flex-alignment($base)
+
+  &-gap
+    for $i in 1..10
+      &-{$i}
+        $gap = $base-gap * $i * 0.5
+        margin-left - $gap
+        margin-right - $gap
+        > *
+          margin-left $gap
+          margin-right $gap

@@ -1,6 +1,14 @@
-function login() {
-  renderTemplate('login');
+function login(ctx, next) {
+
+  if (ctx.user) {
+    return page('/user');
+  }
+
+  render('login');
+
+  console.log(ctx);
   const loginForm = document.forms['login-form'];
+
   loginForm && loginForm.addEventListener('submit', (e) => {
     const form = e.target;
     const auth = firebase.auth();
@@ -28,8 +36,8 @@ function login() {
     } else {
       auth
         .signInWithEmailAndPassword(email.value, password.value)
-        .then(user => {
-          redirectTo('/user');
+        .then(() => {
+          page('/user');
         })
         .catch(err => {
           console.log(err);

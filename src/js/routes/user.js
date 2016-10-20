@@ -1,4 +1,3 @@
-function user() {
-  checkUser();
-  renderTemplate('user');
+function user(ctx, next) {
+  render('user');
 }
