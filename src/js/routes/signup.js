@@ -1,23 +1,28 @@
 function signup(ctx, next) {
   render('signup');
 
-  const auth = firebase.auth();
-  const errorsContainer = qs('#errors');
-  console.dir(errorsContainer);
+  const auth            = firebase.auth();
+  const signupForm      = document.forms['signup-form'];
+  const submitBtn       = qs('[type="submit"]', signupForm);
+  const errorsContainer = qs('#errors', signupForm);
 
   const errors = {
     'confirmation-error': 'Password must be the same in both fields'
   }
 
-  function showError(errorName) {
+  function renderError(error) {
+    errorsContainer.innerHTML = [].concat(error).map(err => {
+      return `
+        <li class="list-group-item list-group-item-danger">
+          <span>${err}</span>
+        </li>
+      `;
+    }).join('');
+  }
+
+  function showError(error) {
     // render all error messages
-    [].concat(errorName).forEach(name => {
-      const item = document.createElement('li');
-      item.className = 'list-group-item list-group-item-danger';
-      item.setAttribute('data-error-name', name);
-      item.textContent = errors[name];
-      errorsContainer.appendChild(item);
-    });
+    renderError(error);
 
     // show error container
     if (errorsContainer.hidden) {
@@ -26,26 +31,38 @@ function signup(ctx, next) {
   }
 
   function hideError(errorName) {
-    const error = qs(`[data-error-name="${errorName}"]`, errorsContainer);
-    errorsContainer.removeChild(error);
-    if (errorsContainer.childElementCount == 0) {
-      errorsContainer.hidden = true;
-    }
+    errorsContainer.innerHTML = '';
+    errorsContainer.hidden = true;
   }
 
-  document.forms['signup-form'].addEventListener('submit', (e) => {
+  function setLoadingState() {
+    signupForm.classList.add('is-loading');
+    submitBtn.setAttribute('disabled', true);
+  }
+
+  function unsetLoadingState() {
+    signupForm.classList.remove('is-loading');
+    submitBtn.removeAttribute('disabled');
+  }
+
+  signupForm.addEventListener('submit', (e) => {
     const form = e.target;
     const { email, password, password_confirm } = form.elements;
 
     e.preventDefault();
 
     if (password.value !== password_confirm.value) {
-      return showError('confirmation-error');
+      return showError(errors['confirmation-error']);
     }
 
+    setLoadingState();
+    hideError();
     auth
       .createUserWithEmailAndPassword(email.value, password.value)
-      .then(user => console.log(user))
-      .catch(err => console.log(err));
+      .then(() => page('/user'))
+      .catch(err => {
+        unsetLoadingState();
+        showError(err.message);
+      });
   });
 }

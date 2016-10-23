@@ -16,6 +16,9 @@
     /
       flex-alignment($base)
 
+  &-wrap
+    flex-wrap wrap
+
   &-gap
     for $i in 1..10
       &-{$i}
@@ -25,3 +28,11 @@
         > *
           margin-left $gap
           margin-right $gap
+
+  &-v-gap
+    for $i in 1..10
+      &-{$i}
+        $gap = $base-gap * $i
+        margin-bottom - $gap
+        > *
+          margin-bottom $gap

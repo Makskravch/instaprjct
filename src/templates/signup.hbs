@@ -1,7 +1,7 @@
 <div class="container-fluid">
   {{> header}}
 
-  <form id="signup-form">
+  <form id="signup-form" class="form">
 
     <div class="row">
       <div class="col-sm-6 col-sm-offset-3">
@@ -23,7 +23,7 @@
           <input type="password" class="form-control" name="password_confirm">
         </div>
 
-        <button type="submit" class="btn btn-primary">Sign Up</button>
+        {{> form-submit btn-text="Sign Up"}}
 
       </div>
     </div>

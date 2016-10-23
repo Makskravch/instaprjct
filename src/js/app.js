@@ -9,56 +9,21 @@
   });
 
   //=require 'helpers.js'
+  //=require 'middlewares/*.js'
   //=require 'routes/*.js'
 
   const { location, history, templates } = window;
   const rootElement = qs('#root');
-  const unlockedPaths = [
-    '/',
-    '/login',
-    '/signup'
-  ];
-
-  function getUserData(currentUser) {
-    if (!currentUser) return null;
-    return pick(currentUser, [
-      'displayName',
-      'email',
-      'photoURL',
-      'isAnonymous',
-      'emailVerified',
-      'uid',
-      'someProp'
-    ]);
-  }
 
   function render(tplName, data = {}) {
     const user = firebase.auth().currentUser;
-    data = Object.assign(data, { user: getUserData(user) });
+    const userData = user ? user.toJSON() : null;
+    data = Object.assign(data, { user: userData });
     rootElement.innerHTML = templates[tplName](data);
   }
 
   function render404() {
     render('404');
-  }
-
-  function auth(ctx, next) {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      ctx.user = pick(user, [
-        'displayName',
-        'email',
-        'photoURL',
-        'isAnonymous',
-        'emailVerified',
-        'uid',
-        'someProp'
-      ]);
-      return next();
-    } else if (!unlockedPaths.includes(ctx.pathname)) {
-      page('/login');
-    }
-    next();
   }
 
   page('*', auth);
