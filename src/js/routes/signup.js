@@ -59,7 +59,7 @@ function signup(ctx, next) {
     hideError();
     auth
       .createUserWithEmailAndPassword(email.value, password.value)
-      .then(() => page('/user'))
+      .then(() => page('/profile'))
       .catch(err => {
         unsetLoadingState();
         showError(err.message);

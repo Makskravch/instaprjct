@@ -1,7 +1,7 @@
 function login(ctx, next) {
 
   if (ctx.user) {
-    return page('/user');
+    return page('/profile');
   }
 
   render('login');
@@ -37,7 +37,7 @@ function login(ctx, next) {
       auth
         .signInWithEmailAndPassword(email.value, password.value)
         .then(() => {
-          page('/user');
+          page('/profile');
         })
         .catch(err => {
           console.log(err);

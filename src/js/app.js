@@ -1,3 +1,5 @@
+'use strict';
+
 (() => {
 
   firebase.initializeApp({
@@ -31,7 +33,7 @@
   page('/login', login);
   page('/logout', logout);
   page('/signup', signup);
-  page('/user', user);
+  page('/profile', profile);
   page('*', render404);
 
   // simulate firebase 'onready' behavior

@@ -1,0 +1,78 @@
+<div class="container-flui">
+  {{> header}}
+
+  <div class="container">
+    {{#with user}}
+    <div class="profile">
+      <div class="profile__left">
+        <div class="profile__pic" {{#if photoURL}}style="background-image: url('{{ photoURL }}')"{{/if}}></div>
+        <label></label>
+      </div>
+
+      <div class="profile__body">
+
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" value="{{ displayName }}" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Email</label>
+          <div class="form-control" readonly>{{ email }}</div>
+        </div>
+
+        <div class="form-group">
+          <label for="name">UID</label>
+          <div class="form-control" readonly>{{ uid }}</div>
+        </div>
+
+        <div class="profile__actions f f-gap-2">
+          <button class="btn btn-default btn-mw-sm" data-toggle="modal" data-target="#edit-profile-modal">
+            <i class="fa fa-pencil"></i>
+            <span>Edit</span>
+          </button>
+          <button class="btn btn-danger btn-mw-sm">
+            <i class="fa fa-trash"></i>
+            <span>Delete</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+    {{/with}}
+  </div>
+
+</div>
+
+{{#with user}}
+<div class="modal fade" id="edit-profile-modal">
+  <div class="modal-dialog">
+    <form class="modal-content" id="edit-profile">
+      <header class="modal-header">
+        <button class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+        <h3 class="modal-title">Edit profile <small>{{ uid }}</small></h3>
+      </header>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="displayName">Name</label>
+          <input type="text" name="displayName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="photoURL">Profile picture URL</label>
+          <input type="text" name="photoURL" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="file">Upload picture</label>
+          <input type="file" name="file" class="form-control">
+        </div>
+      </div>
+      <footer class="modal-footer">
+        <div class="f f-align-13-2">
+          <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+      </footer>
+    </form>
+  </div>
+</div>
+{{/with}}
