@@ -3,48 +3,65 @@
 
   <div class="container">
     {{#with user}}
-    <div class="profile">
+    <form class="profile" id="edit-profile">
       <div class="profile__left">
-        <div class="profile__pic" {{#if photoURL}}style="background-image: url('{{ photoURL }}')"{{/if}}></div>
-        <label></label>
+        <div class="profile__pic" {{#if photoURL}}style="background-image: url('{{ photoURL }}')"{{/if}}>
+          <label class="profile__pic-uploader" title="Change picture">
+            <input type="file" name="profile_picture">
+          </label>
+        </div>
       </div>
 
       <div class="profile__body">
 
         <div class="form-group">
           <label for="name">Name</label>
-          <input type="text" class="form-control" value="{{ displayName }}" readonly>
+          <input type="text" name="name" class="form-control" value="{{ displayName }}" readonly>
         </div>
 
         <div class="form-group">
-          <label for="name">Email</label>
+          <label>Email</label>
           <div class="form-control" readonly>{{ email }}</div>
         </div>
 
         <div class="form-group">
-          <label for="name">UID</label>
+          <label>UID</label>
           <div class="form-control" readonly>{{ uid }}</div>
         </div>
 
-        <div class="profile__actions f f-gap-2">
-          <button class="btn btn-default btn-mw-sm" data-toggle="modal" data-target="#edit-profile-modal">
+        <div class="profile__actions">
+          <button class="btn btn-default btn-mw-sm" data-action="edit">
             <i class="fa fa-pencil"></i>
             <span>Edit</span>
           </button>
-          <button class="btn btn-danger btn-mw-sm">
+        </div>
+
+        <div class="profile__actions profile__actions--edit">
+          <div>
+            <button class="btn btn-primary btn-mw-sm" data-action="save">
+              <i class="fa fa-trash"></i>
+              <span>Save</span>
+            </button>
+            <button class="btn btn-default btn-mw-sm" data-action="cancel">
+              <i class="fa fa-trash"></i>
+              <span>Cancel</span>
+            </button>
+          </div>
+
+          <button class="btn btn-danger btn-mw-sm" data-action="delete">
             <i class="fa fa-trash"></i>
-            <span>Delete</span>
+            <span>Delete account</span>
           </button>
         </div>
 
       </div>
-    </div>
+    </form>
     {{/with}}
   </div>
 
 </div>
 
-{{#with user}}
+{{!-- {{#with user}}
 <div class="modal fade" id="edit-profile-modal">
   <div class="modal-dialog">
     <form class="modal-content" id="edit-profile">
@@ -76,3 +93,4 @@
   </div>
 </div>
 {{/with}}
+ --}}

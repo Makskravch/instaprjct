@@ -38,3 +38,32 @@ const pick = (object, props) => {
     return result;
   }, {});
 };
+
+/**
+ * Attach a handler to an event for all elements matching a selector.
+ *
+ * @param {Element} target Element which the event must bubble to
+ * @param {string} selector Selector to match
+ * @param {string} type Event name
+ * @param {Function} handler Function called when the event bubbles to target
+ *                           from an element matching selector
+ * @param {boolean} [capture] Capture the event
+ */
+const delegate = (target, type, selector, handler, capture) => {
+  const dispatchEvent = (event) => {
+    console.time('delegate');
+    const targetElement = event.target;
+    const potentialElements = target.querySelectorAll(selector);
+    let i = potentialElements.length;
+
+    while (i--) {
+      if (potentialElements[i] === targetElement) {
+        handler.call(targetElement, event);
+        break;
+      }
+    }
+    console.timeEnd('delegate');
+  };
+
+  target.addEventListener(type, dispatchEvent, !!capture);
+};

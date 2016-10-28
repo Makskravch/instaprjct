@@ -8,7 +8,7 @@ function signup(ctx, next) {
 
   const errors = {
     'confirmation-error': 'Password must be the same in both fields'
-  }
+  };
 
   function renderError(error) {
     errorsContainer.innerHTML = [].concat(error).map(err => {
@@ -45,6 +45,21 @@ function signup(ctx, next) {
     submitBtn.removeAttribute('disabled');
   }
 
+  function onUserCreated(user) {
+    const usersRef = firebase.database().ref(`users/${user.uid}`);
+    usersRef
+      .set(user.toJSON())
+      .then(() => {
+        user.sendEmailVerification();
+        page('/profile');
+      });
+  }
+
+  function onUserCreationError(error) {
+    unsetLoadingState();
+    showError(error.message);
+  }
+
   signupForm.addEventListener('submit', (e) => {
     const form = e.target;
     const { email, password, password_confirm } = form.elements;
@@ -59,10 +74,7 @@ function signup(ctx, next) {
     hideError();
     auth
       .createUserWithEmailAndPassword(email.value, password.value)
-      .then(() => page('/profile'))
-      .catch(err => {
-        unsetLoadingState();
-        showError(err.message);
-      });
+      .then(onUserCreated)
+      .catch(onUserCreationError);
   });
 }

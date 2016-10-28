@@ -22,12 +22,7 @@
   &-gap
     for $i in 1..10
       &-{$i}
-        $gap = $base-gap * $i * 0.5
-        margin-left - $gap
-        margin-right - $gap
-        > *
-          margin-left $gap
-          margin-right $gap
+        flex-gap(i)
 
   &-v-gap
     for $i in 1..10

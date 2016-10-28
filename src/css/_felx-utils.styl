@@ -72,3 +72,14 @@ f-align($x = 1, $y = 1)
   display flex
   justify-content $x
   align-items $y
+
+
+flex-gap($mult = 1, $base = $base-gap)
+  $half-gap = $base * $mult * 0.5
+
+  margin-left - $half-gap
+  margin-rigth - $half-gap
+
+  > *
+    margin-left $half-gap
+    margin-rigth $half-gap
