@@ -3,7 +3,6 @@
   $pic-size = 140px
 
   f-align(1, 1)
-  flex-wrap wrap
 
   &__left
     text-align center
@@ -56,8 +55,11 @@
       position absolute
       opacity 0
 
+  .fa-spinner
+    display none
+
   // edit mode
-  &.has-edit-mode
+  &.is-edit
 
     {$this}__pic-uploader
       display block
@@ -68,3 +70,8 @@
       &--edit
         display flex
 
+  // loading state
+  &.is-loading
+
+    .fa-spinner
+      display block

@@ -10,7 +10,8 @@
     messagingSenderId: '459426391837'
   });
 
-  //=require 'helpers.js'
+  //=require 'lib/*.js'
+  //=require 'classes/*.js'
   //=require 'middlewares/*.js'
   //=require 'routes/*.js'
 

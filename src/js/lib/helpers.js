@@ -52,15 +52,15 @@ const pick = (object, props) => {
 const delegate = (target, type, selector, handler, capture) => {
   const dispatchEvent = (event) => {
     console.time('delegate');
-    const targetElement = event.target;
-    const potentialElements = target.querySelectorAll(selector);
-    let i = potentialElements.length;
+    let targetElement = event.target;
 
-    while (i--) {
-      if (potentialElements[i] === targetElement) {
+    while (targetElement !== target ) {
+      if (targetElement.matches(selector)) {
+        event.delegateTarget = event.delegateTarget || targetElement;
         handler.call(targetElement, event);
         break;
       }
+      targetElement = targetElement.parentNode;
     }
     console.timeEnd('delegate');
   };
