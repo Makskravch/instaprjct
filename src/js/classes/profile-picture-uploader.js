@@ -26,34 +26,37 @@ class ProfilePictureUploader {
     const user     = firebase.auth().currentUser;
     const userRef  = firebase.database().ref(`users/${user.uid}`);
 
+    const updateUserInDB = (newData) =>
+      userRef.transaction((data) => Object.assign({}, data, newData));
+
+    // update user profile and then uppdate user data storen database
+    const updateProfile = ({
+      downloadURL: photoURL,
+      metadata: { fullPath: photoPath }
+    } = {}) => {
+      return user
+        .updateProfile({ photoURL })
+        .then(() => updateUserInDB({ photoURL, photoPath }));
+    };
+
+    const endSaving = () => {
+      this._exitEditedState();
+      this._exitLoadingState();
+      this._setPicture();
+    };
+
+    const handleError = (err) => {
+      console.error(err);
+      this._showError('saving-error');
+      this._exitLoadingState();
+    };
+
     this._enterLoadingState();
 
     this._uploadPicture()
-      // get uploaded picture url and update user profile
-      .then(({ downloadURL }) => {
-        return user.updateProfile({
-          photoURL: downloadURL
-        });
-      })
-      // update user data in database
-      .then(() => {
-        return userRef.transaction((data) => {
-          return Object.assign({}, data, {
-            photoURL: user.photoURL
-          });
-        });
-      })
-      .then(() => {
-        this._exitEditedState();
-        this._exitLoadingState();
-        this._setPicture();
-      })
-      // handle any error
-      .catch(err => {
-        console.dir(err);
-        this._showError(err.message);
-        this._exitLoadingState();
-      });
+      .then(updateProfile)
+      .then(endSaving)
+      .catch(handleError);
   }
 
   _cancel() {
@@ -65,13 +68,37 @@ class ProfilePictureUploader {
     const file = this.file;
 
     if (!file || !file.size) {
-      return Promise.resolve({});
+      return Promise.resolve();
     }
 
-    const user = firebase.auth().currentUser;
-    const path = `avatars/${user.uid}/${file.name}`;
-    const ref  = firebase.storage().ref(path);
-    const task = ref.put(file);
+    const user     = firebase.auth().currentUser;
+    const now      = new Date();
+    const year     = now.getFullYear();
+    const month    = now.getMonth() + 1;
+    const extName  = file.name.split('.').slice(-1)[0] || '';
+    const fileName = `${user.uid.slice(0, 5)}-${Date.now()}.${extName}`;
+    const path     = `avatars/${year}_${month}/${fileName}`;
+    const storRef  = firebase.storage().ref(path);
+    const task     = storRef.put(file);
+
+    const deleteExist = (existPath) => {
+      firebase.storage().ref(existPath).delete().catch(err => console.error(err));
+    };
+
+    // delete old avatar file if exist
+    firebase
+      .database()
+      .ref(`users/${user.uid}/photoPath`)
+      .once(
+        'value',
+        (snapshot) => {
+          const existPath = snapshot.val();
+          if (existPath) {
+            deleteExist(existPath);
+          }
+        },
+        (err) => console.error(err)
+      );
 
     task.on('state_changed', this._onUploadProgress);
 
@@ -200,7 +227,8 @@ ProfilePictureUploader.defaults = {
   },
   validationsErrors: {
     'invalid-file-type': 'Invalid file type. Only images are supported',
-    'to-large-file': 'Maximum file size for user avatar is 1MB'
+    'to-large-file': 'Image should be less than 1MB',
+    'saving-error': 'Looks like something broke. Please retry'
   }
 };
 
