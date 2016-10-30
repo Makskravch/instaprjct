@@ -1,5 +1,5 @@
 function profile(ctx, next) {
-  render('profile');
+  render('profile-show');
 
-  new UserProfile('#edit-profile');
+  // new UserProfile('#edit-profile');
 }

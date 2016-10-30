@@ -35,6 +35,7 @@
   page('/logout', logout);
   page('/signup', signup);
   page('/profile', profile);
+  page('/profile/edit', profileEdit);
   page('*', render404);
 
   // simulate firebase 'onready' behavior

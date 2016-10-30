@@ -1,6 +1,6 @@
 .profile
   $this = selector()
-  $pic-size = 140px
+  $pic-size = 240px
 
   f-align(1, 1)
 
@@ -36,8 +36,23 @@
     cursor pointer
     border-radius 50%
 
+  &__name
+    font-size 24px
+    font-weight 500
+    margin 24px 0 0
+
+  &__social
+    list-style none
+    margin 12px 0 0
+    padding 0
+    display flex
+    justify-content center
+    flex-wrap wrap
+
+    &:not(:last-child)
+      margin-bottom 24px
+
   &__actions
-    margin-top 20px
 
     &--edit
       f-align(13, 2)
@@ -57,6 +72,17 @@
 
   .fa-spinner
     display none
+
+  &--show
+    display block
+    max-width 460px
+    margin auto
+    text-align center
+
+    {$this}__pic
+      margin 0 auto 24px
+      box-shadow 0 0 20px 0 alpha(black, 0.2)
+
 
   // edit mode
   &.is-edit
