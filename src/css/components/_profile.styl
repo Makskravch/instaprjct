@@ -16,41 +16,42 @@
   &__body
     flex 1 0 auto
 
-  // &__pic
-  //   position relative
-  //   width $pic-size
-  //   height $pic-size
-  //   border-radius 8px
-  //   border 2px solid #ccc
-  //   margin-bottom 12px
-  //   background-size cover
-  //   overflow hidden
+  &__pic
+    position relative
+    width $pic-size
+    height $pic-size
+    border-radius 8px
+    border 2px solid #ccc
+    margin-bottom 12px
+    background-size cover
+    background-position center
+    overflow hidden
 
-  //   input[type="file"]
-  //     display none
+    input[type="file"]
+      display none
 
-  // &__pic-uploader
-  //   position absolute
-  //   top 0
-  //   left 0
-  //   margin 0
-  //   width 100%
-  //   height 100%
-  //   cursor pointer
-  //   border-radius 6px
-  //   background alpha(black, 0.8)
-  //   color white
-  //   opacity 0
-  //   transition all 0.3s ease
+  &__pic-uploader
+    position absolute
+    top 0
+    left 0
+    margin 0
+    width 100%
+    height 100%
+    cursor pointer
+    border-radius 6px
+    background alpha(black, 0.8)
+    color white
+    opacity 0
+    transition all 0.3s ease
 
-  //   > span
-  //     position absolute
-  //     top 50%
-  //     left 50%
-  //     transform translate(-50%, -50%)
+    > span
+      position absolute
+      top 50%
+      left 50%
+      transform translate(-50%, -50%)
 
-  //   &:hover
-  //     opacity 1
+    &:hover
+      opacity 1
 
   &__name
     font-size 24px
