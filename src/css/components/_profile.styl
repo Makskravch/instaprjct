@@ -1,6 +1,6 @@
 .profile
   $this = selector()
-  $pic-size = 240px
+  $pic-size = 200px
 
   f-align(1, 1)
 
@@ -8,33 +8,49 @@
     text-align center
     flex 0 1 auto
     margin-right 20px
+    max-width $pic-size
+
+    .btn-block
+      margin-top 0
 
   &__body
     flex 1 0 auto
 
-  &__pic
-    position relative
-    width $pic-size
-    height $pic-size
-    border-radius 50%
-    border 2px solid #ccc
-    margin-bottom 20px
-    background-size cover
-    overflow hidden
+  // &__pic
+  //   position relative
+  //   width $pic-size
+  //   height $pic-size
+  //   border-radius 8px
+  //   border 2px solid #ccc
+  //   margin-bottom 12px
+  //   background-size cover
+  //   overflow hidden
 
-    input[type="file"]
-      display none
+  //   input[type="file"]
+  //     display none
 
-  &__pic-uploader
-    display none
-    position absolute
-    top 0
-    left 0
-    margin 0
-    width 100%
-    height 100%
-    cursor pointer
-    border-radius 50%
+  // &__pic-uploader
+  //   position absolute
+  //   top 0
+  //   left 0
+  //   margin 0
+  //   width 100%
+  //   height 100%
+  //   cursor pointer
+  //   border-radius 6px
+  //   background alpha(black, 0.8)
+  //   color white
+  //   opacity 0
+  //   transition all 0.3s ease
+
+  //   > span
+  //     position absolute
+  //     top 50%
+  //     left 50%
+  //     transform translate(-50%, -50%)
+
+  //   &:hover
+  //     opacity 1
 
   &__name
     font-size 24px
@@ -80,6 +96,8 @@
     text-align center
 
     {$this}__pic
+      width 240px
+      height 240px
       margin 0 auto 24px
       box-shadow 0 0 20px 0 alpha(black, 0.2)
 
@@ -100,4 +118,79 @@
   &.is-loading
 
     .fa-spinner
+      display block
+
+
+.profile-picture
+  $this = selector()
+  $pic-size = 200px
+
+  &__picture
+    position relative
+    width $pic-size
+    height $pic-size
+    border-radius 8px
+    border 2px solid #ccc
+    margin-bottom 12px
+    background-size cover
+    background-position center
+    overflow hidden
+
+  &__trigger
+    position absolute
+    top 0
+    left 0
+    margin 0
+    width 100%
+    height 100%
+    cursor pointer
+    border-radius 6px
+    background alpha(black, 0.8)
+    color white
+    opacity 0
+    transition all 0.3s ease
+
+    > span
+      position absolute
+      top 50%
+      left 50%
+      transform translate(-50%, -50%)
+
+    &:hover
+      opacity 1
+
+  &__actions
+    display none
+
+  &__error
+    display none
+    padding 5px
+    font-size 11px
+    text-align left
+
+  input[type="file"]
+    display none
+
+  .progress
+    display none
+
+
+  &.is-edited
+
+    {$this}__actions
+      display flex
+
+
+  &.is-loading
+
+    {$this}__actions
+      display none
+
+    .progress
+      display block
+
+
+  &.has-error
+
+    {$this}__error
       display block

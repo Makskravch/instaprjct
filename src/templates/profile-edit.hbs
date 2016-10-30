@@ -3,14 +3,34 @@
 
   <div class="container">
     {{#with user}}
-    <form class="profile" id="edit-profile">
+    <div class="profile">
       <div class="profile__left">
-        <div class="profile__pic" {{#if photoURL}}style="background-image: url('{{ photoURL }}')"{{/if}}>
-          <label class="profile__pic-uploader" title="Change picture">
-            <span>Choose new picture</span>
-            <input type="file" name="picture" accept="image/*">
-          </label>
-        </div>
+
+        <form class="profile-picture" id="profile-picture">
+          <div class="profile-picture__picture" {{#if photoURL}}style="background-image: url('{{ photoURL }}')"{{/if}}>
+            <label class="profile-picture__trigger" title="Change picture">
+              <span>Choose a new picture</span>
+              <input type="file" name="picture" accept="image/*">
+            </label>
+          </div>
+
+          <div class="profile-picture__error alert alert-danger"></div>
+
+          <div class="profile-picture__actions f f-gap-2 f-align-1-2">
+            <button class="btn btn-success btn-sm btn-block" data-action="save">
+              <i class="fa fa-upload"></i> Save
+            </button>
+
+            <button class="btn btn-danger btn-sm btn-block u-my-0" data-action="cancel">
+              <i class="fa fa-ban"></i> Cancel
+            </button>
+          </div>
+
+          <div class="progress">
+            <div class="progress-bar progress-bar-success progress-bar-striped active"></div>
+          </div>
+        </form>
+
       </div>
 
       <div class="profile__body">
@@ -25,17 +45,12 @@
 
             <div class="form-group">
               <label for="name">Name</label>
-              <input type="text" name="name" class="form-control" value="{{ displayName }}" readonly>
+              <input type="text" name="name" class="form-control" value="{{ displayName }}">
             </div>
 
             <div class="form-group">
               <label>Email</label>
-              <div class="form-control" readonly>{{ email }}</div>
-            </div>
-
-            <div class="form-group">
-              <label>UID</label>
-              <div class="form-control" readonly>{{ uid }}</div>
+              <input type="email" name="email" class="form-control" value="{{ email }}" readonly>
             </div>
 
           </div>
@@ -73,7 +88,7 @@
         </div>
 
       </div>
-    </form>
+    </div>
     {{/with}}
   </div>
 
