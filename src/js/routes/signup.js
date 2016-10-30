@@ -47,8 +47,8 @@ function signup(ctx, next) {
 
   function onUserCreated(user) {
     const usersRef = firebase.database().ref(`users/${user.uid}`);
-    usersRef
-      .set(user.toJSON())
+    const userData = pick(user, ['uid', 'email', 'displayName', 'photoURL']);
+    usersRef.set(userData)
       .then(() => {
         user.sendEmailVerification();
         page('/profile');
