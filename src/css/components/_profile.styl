@@ -3,6 +3,8 @@
   $pic-size = 200px
 
   f-align(1, 1)
+  max-width 800px
+  margin auto
 
   &__left
     text-align center
@@ -14,7 +16,7 @@
       margin-top 0
 
   &__body
-    flex 1 0 auto
+    flex 1 0 0%
 
   &__pic
     position relative
@@ -89,6 +91,9 @@
 
   .fa-spinner
     display none
+
+  .input-group-addon
+    min-width 45px
 
   &--show
     display block
