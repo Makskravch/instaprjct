@@ -37,55 +37,143 @@
 
         <div class="profile__errors alert alert-danger" hidden></div>
 
-        <div class="panel panel-default">
+        <form class="panel panel-default" id="public-info">
           <header class="panel-heading">
-            <h3 class="panel-title">Common info</h3>
+            <h3 class="panel-title">Public information</h3>
+          </header>
+
+          <div class="panel-body">
+
+            <div class="form-group">
+              <label>Display Name</label>
+              <input
+                type="text"
+                name="display_name"
+                id="display_name"
+                class="form-control"
+                value="{{ displayName }}">
+            </div>
+
+            <div class="form-group">
+              <label>Public Email</label>
+              <input
+                type="email"
+                name="public_email"
+                class="form-control"
+                value="{{ publicEmail }}">
+            </div>
+
+            <div class="form-group">
+              <label>Phone</label>
+              <input
+                type="tel"
+                name="phone_number"
+                class="form-control"
+                value="{{ phoneNumber }}">
+            </div>
+
+
+            <hr>
+
+            <div class="form-group">
+              <label>Twitter</label>
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-twitter"></i></span>
+                <input
+                  type="text"
+                  name="social_twitter"
+                  class="form-control"
+                  value="{{ social.twitter }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Facebook</label>
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-facebook"></i></span>
+                <input
+                  type="text"
+                  name="social_facebook"
+                  class="form-control"
+                  value="{{ social.facebook }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Vkontakte</label>
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-vk"></i></span>
+                <input
+                  type="text"
+                  name="social_vkontakte"
+                  class="form-control"
+                  value="{{ social.vkontakte }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label> Personal website</label>
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-globe"></i></span>
+                <input
+                  type="text"
+                  name="social_website"
+                  class="form-control"
+                  value="{{ social.vkontakte }}">
+              </div>
+            </div>
+
+          </div>
+          <footer class="panel-footer">
+            {{> form-submit btn-text="Update"}}
+          </footer>
+        </form>
+
+        <form class="panel panel-default" id="change-password">
+          <header class="panel-heading">
+            <h3 class="panel-title">Password</h3>
           </header>
           <div class="panel-body">
 
             <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" name="name" class="form-control" value="{{ displayName }}">
+              <label>Primary Email</label>
+              <input
+                type="email"
+                name="email"
+                class="form-control"
+                value="{{ email }}"
+                readonly>
             </div>
 
             <div class="form-group">
-              <label>Email</label>
-              <input type="email" name="email" class="form-control" value="{{ email }}" readonly>
+              <label>Old password</label>
+              <input
+                type="password"
+                name="password"
+                class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label>New password</label>
+              <input
+                type="password"
+                name="password"
+                class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label>Confirm new password</label>
+              <input
+                type="password"
+                name="password"
+                class="form-control">
             </div>
 
           </div>
-
-          <div class="panel-footer">
-
-            <div class="profile__actions">
-              <button class="btn btn-default btn-mw-sm" data-profile-action="edit">
-                <i class="fa fa-pencil"></i>
-                <span>Edit</span>
-              </button>
-            </div>
-
-            <div class="profile__actions profile__actions--edit">
-              <div class="f f-gap-3 f-align-1-2">
-                <button class="btn btn-primary btn-mw-sm" data-profile-action="save">
-                  <i class="fa fa-trash"></i>
-                  <span>Save</span>
-                </button>
-
-                <button class="btn btn-default btn-mw-sm" data-profile-action="cancel">
-                  <i class="fa fa-trash"></i>
-                  <span>Cancel</span>
-                </button>
-
-                <i class="fa fa-spinner fa-lg fa-spin"></i>
-              </div>
-
-              <button class="btn btn-danger btn-mw-sm" data-profile-action="delete">
-                <i class="fa fa-trash"></i>
-                <span>Delete account</span>
-              </button>
-            </div>
-          </div>
-        </div>
+          <footer class="panel-footer">
+            {{> form-submit btn-text="Change password"}}
+          </footer>
+        </form>
 
       </div>
     </div>
