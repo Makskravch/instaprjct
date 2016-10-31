@@ -3,7 +3,6 @@ class ProfilePictureUploader {
     this.element        = isDomElement(element) ? element : qs(element);
     this.props          = Object.assign({}, ProfilePictureUploader.defaults, props);
     this.input          = qs(this.props.input, this.element);
-    this.submitBtn      = qs(this.props.submit, this.element);
     this.progressBar    = qs(this.props.progressBar, this.element);
     this.pictureElement = qs(this.props.pictureElement, this.element);
     this.errorContainer = qs(this.props.errorContainer, this.element);
