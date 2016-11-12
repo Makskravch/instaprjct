@@ -19,9 +19,10 @@ const FormField = (function() {
 
   const messages = {
     email: 'Email is not valid',
-    minLength: 'Value must contain at least {n} characters',
-    maxLength: 'Value can\'t contain more than {n} characters',
+    minLength: 'Field must contain at least {n} characters',
+    maxLength: 'Field can\'t contain more than {n} characters',
     required: 'Field is required',
+    number: 'Field can contain only numbers'
   };
 
   const validator = {
@@ -29,6 +30,7 @@ const FormField = (function() {
     minLength: (s, len = 6) => s.length >= len || messages.minLength.replace('{n}', len),
     maxLength: (s, len = 100) => s.length <= len || messages.maxLength.replace('{n}', len),
     required: (s) => !!s.length || messages.required,
+    number: (s) => NUMBER_RE.test(s) || messages.number
   };
 
   class FormField {
@@ -37,6 +39,7 @@ const FormField = (function() {
       this.props     = Object.assign({}, FormField.defaults, props);
       this.rules     = [];
       this.errors    = [],
+      this._required = false;
       this._isValid  = null;
       this._hasError = null;
 
@@ -51,37 +54,48 @@ const FormField = (function() {
       }
 
       this._setupValidator();
-      this.validate = this.validate.bind(this);
       this._bindEvents();
 
       console.log(this);
     }
 
     validate() {
-      const result = this._validator(this.control.value);
-      this._resetState();
+      const value = this.control.value;
+      this.resetState();
+
+      // discard validation if field is not required and has empty value
+      if (value === '' && !this.required) return;
+      const result = this._validator(value);
 
       if (result === true) {
-        this._setValidState();
+        this.setValidState();
       } else {
-        this._setErrorState(result);
+        this.setErrorState(result);
       }
     }
 
-    _setErrorState(message) {
-      this.errors = [].concat(message);
+    setErrorState(message) {
+      if (this._hasError) return;
+
+      this.errors = message ? [].concat(message) : [];
       this.element.classList.add(this.props.errorClass);
-      this.element.appendChild(this.errorElement);
-      if (this.errorElement) this.errorElement.innerHTML = this.errors.join('<br>');
+
+      if (this.errorElement) {
+        this.element.appendChild(this.errorElement);
+        this.errorElement.innerHTML = this.errors.join('<br>');
+      }
+
       this._hasError = true;
     }
 
-    _setValidState() {
+    setValidState() {
+      if (this._isValid) return;
+
       this.element.classList.add(this.props.validClass);
       this._isValid = true;
     }
 
-    _resetState() {
+    resetState() {
       if (this._isValid === null && this._hasError === null) return;
 
       const { errorClass, validClass } = this.props;
@@ -107,18 +121,25 @@ const FormField = (function() {
     }
 
     _bindEvents() {
-      const { resetOnFocus, validateOnInput, validateOnBlur } = this.props;
+      const {
+        resetOnFocus,
+        validateOnInput,
+        validateOnBlur,
+        noAutoValidate
+      } = this.props;
+
+      if (noAutoValidate) return;
 
       if (resetOnFocus) {
-        this.control.addEventListener('focus', () => this._resetState());
+        this.control.addEventListener('focus', () => this.resetState());
       }
 
       if (validateOnInput) {
-        this.control.addEventListener('input', this.validate);
+        this.control.addEventListener('input', () => this.validate());
       }
 
       if (validateOnBlur) {
-        this.control.addEventListener('blur', this.validate);
+        this.control.addEventListener('blur', () => this.validate());
       }
     }
 
@@ -130,7 +151,7 @@ const FormField = (function() {
         this.rules.push({
           name: 'custom',
           fn: customValidator
-        })
+        });
       }
 
       if (type === 'string' || Array.isArray(validate)) {
@@ -139,6 +160,9 @@ const FormField = (function() {
           const fn = validator[name];
           if (fn) {
             this.rules.push({ name, fn, params });
+          }
+          if (name === 'required') {
+            this._required = true;
           }
         });
       }
@@ -156,7 +180,9 @@ const FormField = (function() {
           // if valid
           if (res === true) return acc;
           // else return custom (if exist) or default error message
-          return acc.concat(errorMessages[name] || res);
+          return acc.concat(
+            errorMessages[name] && errorMessages[name].replace('{n}', params[0]) || res
+          );
         }, []);
         return errors.length ? errors : true;
       };
@@ -171,19 +197,23 @@ const FormField = (function() {
     resetOnFocus: true,
     validateOnInput: false,
     validateOnBlur: true,
+    noAutoValidate: false,
     control: 'input',
     customValidator: null,
     errorMessages: {},
-    validate: 'required'
+    validate: null
   };
 
   return FormField;
 
 } ());
 
-setTimeout(() => {
-  new FormField('#public-info .form-group', {
-    validateOnInput: true,
-    validate: ['required', 'email', 'minLength[5]', 'maxLength[10]']
-  });
-}, 1000);
+// setTimeout(() => {
+//   new FormField('#public-info .form-group:first-child', {
+//     // validate: ['email', 'minLength[10]'],
+//     validateOnInput: true,
+//     customValidator: (val) => {
+//       return val === 'www@com.com' || 'Field must have value "www@com.com"';
+//     }
+//   });
+// }, 1000);
