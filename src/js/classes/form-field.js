@@ -10,14 +10,12 @@ const FormField = (function() {
 
   const RULE_PARAM_RE = /\[.*\]$/; // match 'ruleName[param1, param2]'
 
-  const parseRule = (str) => {
+  const parseRuleFromString = (str) => {
     const match = str.match(RULE_PARAM_RE);
     const name = str.replace(RULE_PARAM_RE, '');
     const params = match ? match[0].slice(1, -1).split(',').filter(p => !!p) : [];
     return { name, params };
   };
-
-  window.parse = parseRule;
 
   const messages = {
     email: 'Email is not valid',
@@ -37,6 +35,8 @@ const FormField = (function() {
     constructor(element, props = {}) {
       this.element   = isDomElement(element) ? element : qs(element);
       this.props     = Object.assign({}, FormField.defaults, props);
+      this.rules     = [];
+      this.errors    = [],
       this._isValid  = null;
       this._hasError = null;
 
@@ -69,10 +69,10 @@ const FormField = (function() {
     }
 
     _setErrorState(message) {
-      this.errorMessages = [].concat(message);
+      this.errors = [].concat(message);
       this.element.classList.add(this.props.errorClass);
       this.element.appendChild(this.errorElement);
-      if (this.errorElement) this.errorElement.innerHTML = this.errorMessages.join('<br>');
+      if (this.errorElement) this.errorElement.innerHTML = this.errors.join('<br>');
       this._hasError = true;
     }
 
@@ -94,7 +94,7 @@ const FormField = (function() {
         this.element.removeChild(this.errorElement);
       }
 
-      this.errorMessages = [];
+      this.errors = [];
 
       this._isValid = null;
       this._hasError = null;
@@ -123,41 +123,42 @@ const FormField = (function() {
     }
 
     _setupValidator() {
-      const { validate, customValidator } = this.props;
+      const { validate, customValidator, errorMessages } = this.props;
       const type = typeof validate;
-      let rules  = [];
-      let fns    = [];
 
       if (typeof customValidator === 'function') {
-        fns.push(customValidator);
+        this.rules.push({
+          name: 'custom',
+          fn: customValidator
+        })
       }
 
       if (type === 'string' || Array.isArray(validate)) {
-        rules = rules.concat(validate);
+        [].concat(validate).forEach(str => {
+          const { name, params } = parseRuleFromString(str);
+          const fn = validator[name];
+          if (fn) {
+            this.rules.push({ name, fn, params });
+          }
+        });
       }
 
-      rules.forEach(rule => {
-        const { name, params } = parseRule(rule);
-        const fn = validator[name];
-        if (fn) {
-          fns.push(fn.bind(undefined, ...params));
-          // fns.push(() => fn.apply(undefined, params));
-        }
-      });
-
       // if "customValidator" is not a function or "validate" has unknown value
-      if (!fns.length) {
+      if (!this.rules.length) {
         throw new Error(
           'You must provide "validate" or "customValidator" option for FormField class.'
         );
       }
 
-      this._rules = fns;
-
       this._validator = (value) => {
-        const results = this._rules.map(fn => fn(value));
-        const valid = results.every(res => res === true);
-        return valid || results.filter(res => typeof res !== 'boolean');
+        const errors = this.rules.reduce((acc, { name, fn, params = [] }) => {
+          const res = fn(value, ...params);
+          // if valid
+          if (res === true) return acc;
+          // else return custom (if exist) or default error message
+          return acc.concat(errorMessages[name] || res);
+        }, []);
+        return errors.length ? errors : true;
       };
     }
 
@@ -172,6 +173,7 @@ const FormField = (function() {
     validateOnBlur: true,
     control: 'input',
     customValidator: null,
+    errorMessages: {},
     validate: 'required'
   };
 
@@ -181,6 +183,7 @@ const FormField = (function() {
 
 setTimeout(() => {
   new FormField('#public-info .form-group', {
-    validate: ['required', 'email']
+    validateOnInput: true,
+    validate: ['required', 'email', 'minLength[5]', 'maxLength[10]']
   });
 }, 1000);
