@@ -21,8 +21,24 @@ const VForm = (function() {
     }
 
     validate() {
+      const { onValid, onError } = this.props;
       const result = this.fields.map(f => f.validate());
-      console.log(result);
+
+      if (result.every(res => res === true)) {
+        call(onValid, this);
+        return true;
+      }
+
+      const errors = result
+        .reduce((acc, next) => acc.concat(next), [])
+        .filter(val => val !== true);
+
+      call(onError, this, errors);
+      return errors;
+    }
+
+    serialize() {
+      return formSerialize(this.element, { hash: true });
     }
 
     _setupFields() {
@@ -38,10 +54,9 @@ const VForm = (function() {
 
     _submitHandler(e) {
       const { onSubmit } = this.props;
+      e.preventDefault();
       this.validate();
       call(onSubmit, e, this);
-      console.log(serialize(this.element));
-      e.preventDefault();
     }
 
     _bindEvents() {
