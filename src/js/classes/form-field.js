@@ -59,12 +59,16 @@ const FormField = (function() {
       console.log(this);
     }
 
+    isValid() {
+      return !this._hasError;
+    }
+
     validate() {
       const value = this.control.value;
       this.resetState();
 
       // discard validation if field is not required and has empty value
-      if (value === '' && !this.required) return;
+      if (value === '' && !this._required) return true;
       const result = this._validator(value);
 
       if (result === true) {
@@ -72,6 +76,8 @@ const FormField = (function() {
       } else {
         this.setErrorState(result);
       }
+
+      return result;
     }
 
     setErrorState(message) {
