@@ -21,7 +21,7 @@ const FormField = (function() {
     email: 'Email is not valid',
     minLength: 'Field must contain at least {n} characters',
     maxLength: 'Field can\'t contain more than {n} characters',
-    required: 'Field is required',
+    required: 'Required field',
     number: 'Field can contain only numbers'
   };
 
@@ -153,13 +153,6 @@ const FormField = (function() {
       const { validate, customValidator, errorMessages } = this.props;
       const type = typeof validate;
 
-      if (typeof customValidator === 'function') {
-        this.rules.push({
-          name: 'custom',
-          fn: customValidator
-        });
-      }
-
       if (type === 'string' || Array.isArray(validate)) {
         [].concat(validate).forEach(str => {
           const { name, params } = parseRuleFromString(str);
@@ -170,6 +163,13 @@ const FormField = (function() {
           if (name === 'required') {
             this._required = true;
           }
+        });
+      }
+
+      if (typeof customValidator === 'function') {
+        this.rules.push({
+          name: 'custom',
+          fn: customValidator
         });
       }
 
