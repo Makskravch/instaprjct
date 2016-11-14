@@ -88,7 +88,10 @@ const FormField = (function() {
 
       if (this.errorElement) {
         this.element.appendChild(this.errorElement);
-        this.errorElement.innerHTML = this.errors.join('<br>');
+        // show all errors
+        // this.errorElement.innerHTML = this.errors.join('<br>');
+        // show only first error
+        this.errorElement.innerHTML = this.errors[0];
       }
 
       this._hasError = true;
@@ -131,10 +134,10 @@ const FormField = (function() {
         resetOnFocus,
         validateOnInput,
         validateOnBlur,
-        noAutoValidate
+        autoValidate
       } = this.props;
 
-      if (noAutoValidate) return;
+      if (!autoValidate) return;
 
       if (resetOnFocus) {
         this.control.addEventListener('focus', () => this.resetState());
@@ -203,7 +206,7 @@ const FormField = (function() {
     resetOnFocus: true,
     validateOnInput: false,
     validateOnBlur: true,
-    noAutoValidate: false,
+    autoValidate: true,
     control: 'input',
     customValidator: null,
     errorMessages: {},
