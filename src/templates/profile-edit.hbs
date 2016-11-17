@@ -37,7 +37,7 @@
 
         <div class="profile__errors alert alert-danger" hidden></div>
 
-        <form class="panel panel-default" id="public-info" novalidate>
+        <form class="form panel panel-default" id="public-info" novalidate>
           <header class="panel-heading">
             <h3 class="panel-title">Public information</h3>
           </header>
@@ -70,7 +70,6 @@
                 class="form-control"
                 value="{{ phoneNumber }}">
             </div>
-
 
             <hr>
 
@@ -128,7 +127,7 @@
           </footer>
         </form>
 
-        <form class="panel panel-default" id="change-password">
+        {{!-- <form class="panel panel-default" id="change-password">
           <header class="panel-heading">
             <h3 class="panel-title">Password</h3>
           </header>
@@ -172,7 +171,7 @@
           <footer class="panel-footer">
             {{> form-submit btn-text="Change password"}}
           </footer>
-        </form>
+        </form> --}}
 
       </div>
     </div>
