@@ -37,7 +37,7 @@ const VForm = (function() {
         .filter(val => val !== true);
 
       call(onError, this, errors);
-      if (autoValidate) this.setErrorState();
+      if (autoValidate) this.setInvalidState();
       return errors;
     }
 
@@ -49,8 +49,8 @@ const VForm = (function() {
       return formSerialize(this.element, { hash: true });
     }
 
-    setErrorState() {
-      this.element.classList.add(this.props.errorClass);
+    setInvalidState() {
+      this.element.classList.add(this.props.invalidClass);
       this.submit.setAttribute('disabled', true);
     }
 
@@ -59,10 +59,20 @@ const VForm = (function() {
       this.submit.setAttribute('disabled', true);
     }
 
+    setSuccessState() {
+      this.element.classList.add(this.props.successClass);
+    }
+
+    setErrorState() {
+      this.element.classList.add(this.props.errorClass);
+    }
+
     resetState() {
-      const { errorClass, loadingClass } = this.props;
-      this.element.classList.remove(errorClass);
+      const { invalidClass, loadingClass, successClass, errorClass } = this.props;
+      this.element.classList.remove(invalidClass);
       this.element.classList.remove(loadingClass);
+      this.element.classList.remove(successClass);
+      this.element.classList.remove(errorClass);
       this.submit.removeAttribute('disabled');
     }
 
@@ -71,7 +81,7 @@ const VForm = (function() {
       if (this.isValid()) {
         this.resetState();
       } else {
-        this.setErrorState();
+        this.setInvalidState();
       }
     }
 
@@ -103,7 +113,10 @@ const VForm = (function() {
 
   VForm.defaults = {
     fieldSelector: '.form-group',
-    errorClass: 'is-invalid',
+    invalidClass: 'is-invalid',
+    loadingClass: 'is-loading',
+    errorClass: 'has-submit-error',
+    successClass: 'has-submit-success',
     autoValidate: true,
     onSubmit: null,
     onError: null,
