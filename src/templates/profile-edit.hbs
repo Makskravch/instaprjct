@@ -2,7 +2,7 @@
   {{> header}}
 
   <div class="container">
-    {{#with user}}
+    {{#with profile}}
     <div class="profile">
       <div class="profile__left">
 
@@ -48,7 +48,7 @@
               <label>Display Name</label>
               <input
                 type="text"
-                name="display_name"
+                name="displayName"
                 class="form-control"
                 value="{{ displayName }}">
             </div>
@@ -57,7 +57,7 @@
               <label>Public Email</label>
               <input
                 type="email"
-                name="public_email"
+                name="publicEmail"
                 class="form-control"
                 value="{{ publicEmail }}">
             </div>
@@ -66,7 +66,7 @@
               <label>Phone</label>
               <input
                 type="tel"
-                name="phone_number"
+                name="phoneNumber"
                 class="form-control"
                 value="{{ phoneNumber }}">
             </div>
@@ -117,7 +117,7 @@
                   type="text"
                   name="social[website]"
                   class="form-control"
-                  value="{{ social.vkontakte }}">
+                  value="{{ social.website }}">
               </div>
             </div>
 
