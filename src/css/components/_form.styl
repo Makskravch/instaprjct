@@ -1,9 +1,19 @@
-.form
+.form-submit
   .fa-circle-o-notch
   .fa-spin
+  .text-success
+  .text-danger
     display none
 
-  &.is-loading
+  .form.is-loading &
     .fa-circle-o-notch
     .fa-spin
+      display block
+
+  .form.has-submit-error &
+    .text-danger
+      display block
+
+  .form.has-submit-success &
+    .text-success
       display block
