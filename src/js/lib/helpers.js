@@ -40,6 +40,14 @@ const pick = (object, props) => {
 };
 
 /**
+ * Check if object is empty
+ * @param  {Object} obj
+ * @return {Boolean}
+ */
+const isEmptyObject = (object) =>
+  Object.keys(object).length === 0 && object.constructor === Object;
+
+/**
  * Attach a handler to an event for all elements matching a selector.
  *
  * @param {Element} target Element which the event must bubble to
