@@ -21,6 +21,9 @@
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown" id="current-user">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            {{#if user.photoURL}}
+            <span class="img-circle" style="background-image:url('{{ user.photoURL }}')"></span>
+            {{/if}}
             {{#if user.displayName}}
             {{ user.displayName }}
             {{else}}
