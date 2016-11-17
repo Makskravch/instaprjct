@@ -74,6 +74,7 @@ const VForm = (function() {
       this.element.classList.remove(successClass);
       this.element.classList.remove(errorClass);
       this.submit.removeAttribute('disabled');
+      return this;
     }
 
     _updateState(e) {
