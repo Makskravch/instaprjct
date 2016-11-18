@@ -8,19 +8,20 @@ function profileEdit(ctx, next) {
 
   const publicInfoForm     = document.forms['public-info'];
   const NAME_VALIDATOR_RE  = /^\w+\s*\w*$/;
-  const PHONE_VALIDATOR_RE = /^\d{10,12}$/;
+  const PHONE_VALIDATOR_RE = /^\+?\d{10,12}$/;
 
   function updateUserInfo(newData) {
     const user  = firebase.auth().currentUser;
     const dbRef = firebase.database().ref(`users/${user.uid}`);
-    const info  = pick(newData, ['displayName', 'publicEmail', 'phoneNumber', 'social']);
+    const info  = pick(newData, ['displayName', 'publicEmail', 'phoneNumber', 'social', 'about']);
     const { displayName } = info;
     if (isEmptyObject(info)) {
       return Promise.resolve();
     }
-    if (displayName) {
+    if (displayName !== undefined) {
       user.updateProfile({ displayName }).catch(err => console.log(err));
     }
+    console.log(info);
     return dbRef.transaction((data) => Object.assign({}, data, info));
   }
 
@@ -63,6 +64,10 @@ function profileEdit(ctx, next) {
           return PHONE_VALIDATOR_RE.test(value)
             || 'Phone must contain from 10 to 12 digits';
         }
+      },
+      'about': {
+        validate: 'maxLength[140]',
+        control: 'textarea'
       }
     }
   });
