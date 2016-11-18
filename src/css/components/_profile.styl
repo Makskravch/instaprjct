@@ -58,7 +58,7 @@
   &__name
     font-size 24px
     font-weight 500
-    margin 24px 0 0
+    margin 24px 0 12px
 
   &__social
     list-style none
@@ -67,9 +67,27 @@
     display flex
     justify-content center
     flex-wrap wrap
+    font-size 24px
 
     &:not(:last-child)
       margin-bottom 24px
+
+    > *
+      margin 0 20px 0 0
+      &:last-child
+        margin-right 0
+
+    a
+      color inherit
+
+    .fa-facebook
+      color: $brand-colors.facebook
+
+    .fa-vk
+      color: $brand-colors.vkontakte
+
+    .fa-twitter
+      color: $brand-colors.twitter
 
   &__actions
 
@@ -97,7 +115,7 @@
 
   &--show
     display block
-    max-width 460px
+    max-width 360px
     margin auto
     text-align center
 
