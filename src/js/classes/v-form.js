@@ -46,7 +46,7 @@ const VForm = (function() {
     }
 
     serialize() {
-      return formSerialize(this.element, { hash: true });
+      return formSerialize(this.element, { hash: true, empty: true });
     }
 
     setInvalidState() {
