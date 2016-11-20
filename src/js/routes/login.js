@@ -1,7 +1,6 @@
 function login(ctx, next) {
-
   if (ctx.user) {
-    return page('/profile');
+    return page.redirect('/profile');
   }
 
   render('login');

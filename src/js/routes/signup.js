@@ -1,4 +1,8 @@
 function signup(ctx, next) {
+  if (ctx.user) {
+    return page.redirect('/profile');
+  }
+
   render('signup');
 
   const auth            = firebase.auth();
