@@ -1,3 +1,6 @@
+body
+  min-width 800px
+
 .btn
   for pair in (xs 5) (sm 7) (md 10) (lg 14)
     &-mw-{pair[0]}
@@ -11,3 +14,14 @@
     margin -10px 5px -10px 0
     background #FFF no-repeat center
     background-size cover
+
+.logotype
+  display inline-block
+  height 1em
+  width 1em
+  background embedurl('../img/logotype.svg', 'utf8') no-repeat center
+  background-size contain
+
+  .navbar-brand &
+    font-size 30px
+    margin-top ceil((@font-size * -0.167))
