@@ -1,0 +1,63 @@
+.post
+  $this = selector()
+  $c-border = #EFEFEF
+  $c-bg = #EFEFEF
+
+  &
+    background white
+    border 1px solid $c-border
+    font-size 14px
+
+  &__header
+    padding 15px
+    display flex
+    align-items center
+    justify-content space-between
+
+  &__content
+    background $c-bg
+
+    img
+      display block
+      margin auto
+      max-width 100%
+
+  &__footer
+    padding 15px
+
+  &__author
+    display flex
+    align-items center
+
+    &-pic
+      width 30px
+      height 30px
+      margin-right 8px
+      border 1px solid $c-border
+      background $c-bg embedurl('../../img/user.svg') no-repeat center
+      background-size 60%
+      border-radius 50%
+
+    &-name
+      font-weight 500
+
+  &__time
+    color #909090
+
+  &__comments-list
+    list-style-type none
+    margin 0
+    padding 0
+
+  &__comment
+    margin-top 8px
+
+    &:first-child
+      margin-top 0
+
+    &-author
+      font-weight 500
+
+    &-text
+      font-weight 400
+      color #555
