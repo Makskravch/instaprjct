@@ -216,13 +216,3 @@ const FormField = (function() {
   return FormField;
 
 } ());
-
-// setTimeout(() => {
-//   new FormField('#public-info .form-group:first-child', {
-//     // validate: ['email', 'minLength[10]'],
-//     validateOnInput: true,
-//     customValidator: (val) => {
-//       return val === 'www@com.com' || 'Field must have value "www@com.com"';
-//     }
-//   });
-// }, 1000);
