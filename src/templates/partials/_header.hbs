@@ -1,4 +1,33 @@
-<nav class="navbar">
+<header class="header">
+  <a href="/" class="header__logo logotype">
+    <span class="sr-only">Instaprjct</span>
+  </a>
+
+  {{#if user}}
+  <div class="header-user dropdown">
+    <div class="header-user__main" data-toggle="dropdown">
+      {{#if user.photoURL}}
+      <span class="header-user__pic" style="background-image:url('{{ user.photoURL }}')"></span>
+      {{/if}}
+      {{#if user.displayName}}
+      {{ user.displayName }}
+      {{else}}
+      {{ user.email }}
+      {{/if}}
+      <span class="caret"></span>
+    </div>
+
+    <ul class="dropdown-menu">
+      <li><a href="/profile">Profile</a></li>
+      <li><a href="/profile/edit">Edit profile</a></li>
+      <li class="divider"></li>
+      <li><a href="/logout">Logout</a></li>
+    </ul>
+  </div>
+  {{/if}}
+</header>
+
+{{!-- <nav class="navbar">
   <div class="navbar-header">
     <button class="collapsed navbar-toggle" data-toggle="collapse" data-target="#header-nav">
       <span class="icon-bar"></span>
@@ -42,3 +71,4 @@
     {{/if}}
   </div>
 </nav>
+ --}}

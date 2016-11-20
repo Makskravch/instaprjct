@@ -1,0 +1,38 @@
+.header
+  display flex
+  justify-content space-between
+  align-items center
+  padding 10px 15px
+  margin 0 -15px 30px
+  border-bottom 1px solid alpha(black, 0.08)
+  box-shadow 0 10px 10px -10px alpha(black, 0.1)
+
+  &__logo
+    font-size 30px
+
+  &-user
+    position relative
+
+    &__main
+      display flex
+      align-items center
+      cursor pointer
+
+      &:hover
+        color #37A8F8
+
+    &__pic
+      display inline-block
+      width 30px
+      height 30px
+      margin-right 10px
+      background #FFF no-repeat center
+      background-size cover
+      border-radius 50%
+
+    .dropdown-menu
+      right 0
+      left auto
+
+    .caret
+      margin-left 8px
