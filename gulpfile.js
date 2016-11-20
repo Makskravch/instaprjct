@@ -55,7 +55,10 @@ gulp.task('styles', () => {
     .src('src/css/[^_]*.styl')
     .pipe(errorHandler())
     .pipe(sourcemaps.init())
-    .pipe(stylus())
+    .pipe(stylus({
+      paths: ['src/css', 'node_modules'],
+      'include css': true
+    }))
     .pipe(postcss([autoprefixer()]))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('public/css'));
