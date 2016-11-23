@@ -22,8 +22,8 @@ class ProfilePictureUploader {
   _save() {
     if (!this._edited || this._loading) return;
 
-    const user     = firebase.auth().currentUser;
-    const userRef  = firebase.database().ref(`users/${user.uid}`);
+    const user    = firebase.auth().currentUser;
+    const userRef = firebase.database().ref(`users/${user.uid}`);
 
     const updateUserInDB = (newData) =>
       userRef.transaction((data) => Object.assign({}, data, newData));
