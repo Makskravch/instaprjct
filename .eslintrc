@@ -11,6 +11,7 @@
     "page": true,
     "jQuery": true,
     "Handlebars": true,
+    "Caman": true,
     "$": true
   },
   "parserOptions": {
