@@ -31,7 +31,7 @@ const errorHandler = (title = 'Error') => plumber({
 gulp.task('server', () => {
   server.init({
     server: {
-      baseDir: 'public',
+      baseDir: ['public', 'src'],
       routes: {
         '/libs': 'node_modules'
       }
