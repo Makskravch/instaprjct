@@ -112,9 +112,12 @@ gulp.task('templates', () => {
 });
 
 
-gulp.task('html', () => {
+gulp.task('static', () => {
   return gulp
-    .src('src/index.html')
+    .src([
+      'src/index.html',
+      'src/favicon.ico'
+    ])
     .pipe(errorHandler())
     .pipe(gulp.dest('public'));
 });
@@ -133,7 +136,7 @@ gulp.task('build', (cb) => {
     'styles',
     'scripts',
     'templates',
-    'html',
+    'static',
     cb
   );
 });
