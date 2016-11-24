@@ -1,0 +1,13 @@
+{{> header}}
+<div class="container-fluid">
+
+  <h1 class="u-mb-4">Add page</h1>
+  <canvas id="canvas" class="u-block u-m-4 u-mx-auto" width="600" height="400"></canvas>
+
+  <div id="presets" class="f f-gap-6 f-v-gap-2 f-wrap">
+    {{#each presets}}
+    <button class="btn btn-default btn-sm" data-preset="{{ this }}">{{ this }}</button>
+    {{/each}}
+  </div>
+
+</div>
