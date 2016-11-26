@@ -5,14 +5,13 @@ const autoprefixer = require('autoprefixer');
 const sourcemaps   = require('gulp-sourcemaps');
 const concat       = require('gulp-concat');
 const include      = require('gulp-include');
-const order        = require('gulp-order');
 const gutil        = require('gulp-util');
 const plumber      = require('gulp-plumber');
 const notify       = require('gulp-notify');
-const cache        = require('gulp-cached');
 const handlebars   = require('gulp-handlebars');
 const wrap         = require('gulp-wrap');
 const declare      = require('gulp-declare');
+const changed      = require('gulp-changed');
 const merge        = require('merge-stream');
 const sequence     = require('run-sequence');
 const path         = require('path');
@@ -67,10 +66,19 @@ gulp.task('styles', () => {
 
 gulp.task('scripts', () => {
   return gulp
-    .src('src/js/app.js')
+    .src([
+      'src/js/app.js',
+      'src/js/vendor.js'
+    ])
     .pipe(errorHandler())
+    .pipe(changed('public/js'))
     .pipe(sourcemaps.init())
-    .pipe(include())
+    .pipe(include({
+      includePaths: [
+        path.join(__dirname, 'node_modules'),
+        path.join(__dirname, 'src', 'js')
+      ]
+    }))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('public/js'));
 });
@@ -111,11 +119,26 @@ gulp.task('templates', () => {
     .pipe(gulp.dest('public/js'));
 });
 
+gulp.task('static:html', () => {
+  return gulp
+    .src('src/index.html')
+    .pipe(errorHandler())
+    .pipe(gulp.dest('public'));
+});
 
-gulp.task('static', () => {
+gulp.task('static:fonts', () => {
   return gulp
     .src([
-      'src/index.html',
+      'node_modules/font-awesome/fonts/*.{woff2,woff}',
+      'node_modules/bootstrap/dist/fonts/*.{woff2,woff}'
+    ])
+    .pipe(errorHandler())
+    .pipe(gulp.dest('public/fonts'));
+});
+
+gulp.task('static', ['static:html', 'static:fonts'], () => {
+  return gulp
+    .src([
       'src/favicon.ico'
     ])
     .pipe(errorHandler())
@@ -145,7 +168,7 @@ gulp.task('build', (cb) => {
 gulp.task('watch', () => {
   gulp.watch('src/css/**/*.styl', ['styles']);
   gulp.watch('src/js/**/*.js', ['scripts']);
-  gulp.watch('src/index.html', ['html']);
+  gulp.watch('src/index.html', ['static:html']);
   gulp.watch('src/templates/**/*.hbs', ['templates']);
 });
 
