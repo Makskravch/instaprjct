@@ -1320,12 +1320,12 @@ growly@^1.2.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
 
-gulp-cached@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/gulp-cached/-/gulp-cached-1.1.0.tgz#d5599dbd92062201a9d2abad3a64a5ebc2739270"
+gulp-changed:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/gulp-changed/-/gulp-changed-1.3.2.tgz#9efc8d325f9805cc7668fdf4e7d60d4b1410f2cf"
   dependencies:
-    lodash.defaults "^2.4.1"
-    through2 "^0.5.1"
+    gulp-util "^3.0.0"
+    through2 "^2.0.0"
 
 gulp-concat@^2.6.0:
   version "2.6.0"
@@ -1371,13 +1371,6 @@ gulp-notify@^2.2.0:
     node-notifier "^4.1.0"
     node.extend "^1.1.3"
     through2 "^0.6.3"
-
-gulp-order@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/gulp-order/-/gulp-order-1.1.1.tgz#0b8ef0833235bed65f1efbc79c6aed97b1db41e9"
-  dependencies:
-    minimatch "~0.2.14"
-    through "~2.3.4"
 
 gulp-plumber@^1.1.0:
   version "1.1.0"
@@ -2120,7 +2113,7 @@ lodash.clonedeep@^3.0.0:
     lodash._baseclone "^3.0.0"
     lodash._bindcallback "^3.0.0"
 
-lodash.defaults@^2.4.1, lodash.defaults@~2.4.1:
+lodash.defaults@~2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-2.4.1.tgz#a7e8885f05e68851144b6e12a8f3678026bc4c54"
   dependencies:
@@ -2372,7 +2365,7 @@ minimatch@^3.0.0, minimatch@^3.0.2, "minimatch@2 || 3":
   dependencies:
     brace-expansion "^1.0.0"
 
-minimatch@~0.2.11, minimatch@~0.2.14:
+minimatch@~0.2.11:
   version "0.2.14"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-0.2.14.tgz#c74e780574f63c6f9a090e90efbe6ef53a6a756a"
   dependencies:
@@ -3390,7 +3383,7 @@ tfunk@^3.0.1:
     chalk "^1.1.1"
     object-path "^0.9.0"
 
-through@~2.3, through@~2.3.1, through@~2.3.4, through@2:
+through@~2.3, through@~2.3.1, through@2:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 
@@ -3401,7 +3394,7 @@ through2@^0.4.1:
     readable-stream "~1.0.17"
     xtend "~2.1.1"
 
-through2@^0.5.0, through2@^0.5.1:
+through2@^0.5.0:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/through2/-/through2-0.5.1.tgz#dfdd012eb9c700e2323fd334f38ac622ab372da7"
   dependencies:
