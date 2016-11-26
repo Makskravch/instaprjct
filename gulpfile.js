@@ -65,14 +65,10 @@ gulp.task('styles', () => {
 });
 
 
-gulp.task('scripts', () => {
+const bundleScripts = (src) => {
   return gulp
-    .src([
-      'src/js/app.js',
-      'src/js/vendor.js'
-    ])
+    .src(src)
     .pipe(errorHandler())
-    .pipe(changed('public/js'))
     .pipe(sourcemaps.init())
     .pipe(include({
       includePaths: [
@@ -82,7 +78,21 @@ gulp.task('scripts', () => {
     }))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('public/js'));
+};
+
+gulp.task('scripts:vendor', () => {
+  return bundleScripts('src/js/vendor.js');
 });
+
+gulp.task('scripts:app', () => {
+  return bundleScripts('src/js/app.js');
+});
+
+gulp.task('scripts', [
+  'scripts:vendor',
+  'scripts:app'
+]);
+
 
 gulp.task('lint', () => {
   return gulp
@@ -172,6 +182,7 @@ gulp.task('build', (cb) => {
     'clean',
     'styles',
     'scripts',
+    'lint',
     'templates',
     'static',
     cb
@@ -181,7 +192,8 @@ gulp.task('build', (cb) => {
 
 gulp.task('watch', () => {
   gulp.watch('src/css/**/*.styl', ['styles']);
-  gulp.watch('src/js/**/*.js', ['scripts']);
+  gulp.watch(['src/js/**/*.js', '!src/js/vendor.js'], ['scripts:app', 'lint']);
+  gulp.watch('!src/js/vendor.js', ['scripts:vendor']);
   gulp.watch('src/index.html', ['static:html']);
   gulp.watch('src/templates/**/*.hbs', ['templates']);
 });
