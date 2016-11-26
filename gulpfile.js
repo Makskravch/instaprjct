@@ -11,7 +11,8 @@ const notify       = require('gulp-notify');
 const handlebars   = require('gulp-handlebars');
 const wrap         = require('gulp-wrap');
 const declare      = require('gulp-declare');
-const changed      = require('gulp-changed');
+const cache        = require('gulp-cached');
+const eslint       = require('gulp-eslint');
 const merge        = require('merge-stream');
 const sequence     = require('run-sequence');
 const path         = require('path');
@@ -81,6 +82,19 @@ gulp.task('scripts', () => {
     }))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('public/js'));
+});
+
+gulp.task('lint', () => {
+  return gulp
+    .src([
+      'src/js/**/*.js',
+      '!src/js/vendor.js',
+      '!node_modules/**'
+    ])
+    .pipe(errorHandler())
+    .pipe(cache('lint'))
+    .pipe(eslint())
+    .pipe(eslint.format());
 });
 
 
