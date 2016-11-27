@@ -1,13 +1,24 @@
 {{> header}}
 <div class="container-fluid">
 
-  <h1 class="u-mb-4">Add page</h1>
-  <canvas id="canvas" class="u-block u-m-4 u-mx-auto" width="600" height="400"></canvas>
+  <div id="editor" class="editor">
+    <div class="editor-canvas-container"></div>
 
-  <div id="presets" class="f f-gap-6 f-v-gap-2 f-wrap">
-    {{#each presets}}
-    <button class="btn btn-default btn-sm" data-preset="{{ this }}">{{ this }}</button>
-    {{/each}}
+    <label class="editor-uploader" title="Upload picture">
+      <span class="editor-uploader__inner">
+        <i class="fa fa-picture-o"></i>
+        <i class="fa fa-plus"></i>
+      </span>
+      <input type="file" accept="image/*">
+    </label>
+
+    <div class="editor-presets">
+      <div class="editor-presets__track">
+        {{#each presets}}
+        <button class="editor-presets__item" data-preset="{{ this }}">{{ this }}</button>
+        {{/each}}
+      </div>
+    </div>
   </div>
 
 </div>

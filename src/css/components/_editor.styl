@@ -1,0 +1,97 @@
+.editor
+  $this     = selector()
+  $shadow-w = 30px
+
+  shadow($angle = 90deg)
+    background linear-gradient($angle, $main-bg-color 0, transparent 100%)
+
+  &
+    max-width 600px
+    margin auto
+
+  &-canvas-container
+    display none
+    width 100%
+
+    canvas
+      display block
+      width 100%
+      height auto
+
+  &-uploader
+    display flex
+    align-items center
+    justify-content center
+    height 400px
+    width 100%
+    margin 0
+    border 8px dashed
+    color #CCC
+    font-size 26px
+    cursor pointer
+
+    &__inner
+      position relative
+
+    .fa-picture-o
+      display block
+      font-size 6em
+
+    .fa-plus
+      position absolute
+      top 0
+      right -1em
+      font-size 2em
+
+    input[type="file"]
+      display none
+
+  &-presets
+    position relative
+    display none
+    margin-top 24px
+    white-space nowrap
+    font-size 0
+    margin 24px (- $shadow-w) 0
+
+    &:before
+    &:after
+      content ""
+      position absolute
+      top 0
+      bottom 0
+      width $shadow-w
+
+    &:before
+      left 0
+      shadow()
+
+    &:after
+      right 0
+      shadow(-90deg)
+
+    &__track
+      font-size 0
+      padding 0 $shadow-w
+      overflow auto
+
+    &__item
+      display inline-block
+      vertical-align top
+      width 100px
+      height 100px
+      font-size 12px
+      background none
+      outline none
+      border 1px solid #ccc
+
+  &.has-image
+    {$this}-uploader
+      display none
+
+    {$this}-canvas-container,
+    {$this}-presets
+      display block
+
+  &.is-busy
+    background red
