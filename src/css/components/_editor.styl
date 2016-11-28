@@ -74,6 +74,12 @@
       font-size 0
       padding 0 $shadow-w
       overflow auto
+      +scrollbar()
+        width 2px
+        height 2px
+        background alpha(#ccc, 0.2)
+      +scrollbar-thumb()
+        background #ccc
 
     &__item
       display inline-block
@@ -84,6 +90,9 @@
       background none
       outline none
       border 1px solid #ccc
+
+      &:not(:last-child)
+        border-right none
 
   &.has-image
     {$this}-uploader

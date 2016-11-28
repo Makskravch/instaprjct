@@ -15,7 +15,7 @@
     <div class="editor-presets">
       <div class="editor-presets__track">
         {{#each presets}}
-        <button class="editor-presets__item" data-preset="{{ this }}">{{ this }}</button>
+        <button class="editor-presets__item" data-preset="{{ this }}">{{ decamelize this }}</button>
         {{/each}}
       </div>
     </div>
