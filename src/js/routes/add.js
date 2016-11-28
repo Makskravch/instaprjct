@@ -1,4 +1,4 @@
 function add(ctx, next) {
-  render('add', { presets: Editor.PRESETS });
+  render('add', { filters: Editor.FILTERS });
   new Editor('#editor');
 }
