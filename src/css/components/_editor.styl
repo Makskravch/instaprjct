@@ -1,6 +1,6 @@
 .editor
   $this     = selector()
-  $shadow-w = 30px
+  $shadow-w = 15px
 
   shadow($angle = 90deg)
     background linear-gradient($angle, $main-bg-color 0, transparent 100%)
@@ -140,6 +140,18 @@
         transition all 0.3s ease
         opacity 0
 
+      &:after
+        position absolute
+        bottom 8px
+        right 8px
+        font-size 20px
+        fa-icon('f00c')
+        color #5CB85C
+        transition all 0.3s ease
+        transform scale(0)
+        visibility hidden
+
+      &.is-active
       &:hover
         > span
           transform none
@@ -147,17 +159,27 @@
 
         &:before
           transition-delay 0.1s
-          opacity 1
+          opacity 0.7
+
+      &.is-active
+        &:after
+          transform none
+          visibility visible
 
       &:not(:last-child)
         border-right none
+
+  &-reset
+    display none
+    margin-top 12px
 
   &.has-image
     {$this}-uploader
       display none
 
     {$this}-canvas-container,
-    {$this}-presets
+    {$this}-presets,
+    {$this}-reset
       display block
 
   &.is-busy

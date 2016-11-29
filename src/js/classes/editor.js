@@ -3,24 +3,32 @@ class Editor {
     this.root             = isDomElement(el) ? el : qs(el);
     this.props            = Object.assign({}, Editor.defaults, props);
     this.canvasContainer  = qs(this.props.canvasContainer, this.root);
-    this.presetsContainer = qs(this.props.presetsContainer, this.root);
+    this.filtersContainer = qs(this.props.filtersContainer, this.root);
     this.fileInput        = qs(this.props.fileInput, this.root);
+    this.triggerReset     = qs(this.props.triggerReset, this.root);
     this.file             = null;
+    this.filter           = null;
     this._processing      = false;
 
-    if (!this.presetsContainer) {
-      this.presetsContainer = this.root;
+    if (!this.filtersContainer) {
+      this.filtersContainer = this.root;
     }
 
+    this.triggerReset.style.display = 'none';
+
+    this._bindEvents();
+    console.log(this);
+  }
+
+  _bindEvents() {
+    this.triggerReset.addEventListener('click', (e) => this.resetFilter(e));
     this.fileInput.addEventListener('change', e => this._onFileChange(e));
     delegate(
-      this.presetsContainer,
+      this.filtersContainer,
       'click',
       '[data-filter]',
       this._onFilterClick.bind(this)
     );
-
-    console.log(this);
   }
 
   _onFileChange(e) {
@@ -30,12 +38,31 @@ class Editor {
   }
 
   _onFilterClick(e) {
-    const { filter } = e.delegateTarget.dataset;
+    const target     = e.delegateTarget;
+    const { filter } = target.dataset;
     if (!filter) return;
     this.applyFilter(filter);
   }
 
-  applyFilter(filter) {
+  _highlightActiveFilter() {
+    const { activeClass } = this.props;
+    const prevActive = qs('.is-active', this.filtersContainer);
+    const nextActive = this.filter
+      ? qs(`[data-filter="${this.filter}"]`, this.filtersContainer)
+      : null;
+    prevActive && prevActive.classList.remove(activeClass);
+    nextActive && nextActive.classList.add(activeClass);
+    this.triggerReset.style.display = '';
+  }
+
+  resetFilter() {
+    this.filter = null;
+    this.caman && this.caman.revert();
+    this._highlightActiveFilter();
+    this.triggerReset.style.display = 'none';
+  }
+
+  applyFilter(filter, cb = noop) {
     if (!(filter in this.caman)) {
       console.log(`There is no filter "${filter}"`);
       return;
@@ -53,6 +80,8 @@ class Editor {
       this._processing = false;
       this.toggleBusyState();
       this.filter = filter;
+      this._highlightActiveFilter();
+      cb();
     });
   }
 
@@ -82,10 +111,12 @@ class Editor {
 }
 
 Editor.defaults = {
+  activeClass: 'is-active',
   busyClass: 'is-busy',
   hasImageClass: 'has-image',
-  presetsContainer: '.editor-presets',
+  filtersContainer: '.editor-presets',
   canvasContainer: '.editor-canvas-container',
+  triggerReset: '.editor-reset',
   fileInput: 'input[type="file"]'
 };
 

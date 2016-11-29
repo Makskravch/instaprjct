@@ -78,3 +78,8 @@ const delegate = (target, type, selector, handler, capture) => {
 
   return () => target.removeEventListener(type, dispatchEvent, !!capture);
 };
+
+/**
+ * Empty function
+ */
+const noop = () => {};
