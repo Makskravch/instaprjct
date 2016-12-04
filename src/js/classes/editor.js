@@ -90,7 +90,7 @@ class Editor {
   }
 
   init() {
-    const { busyClass, hasImageClass } = this.props;
+    const { busyClass, hasImageClass, imageMaxSize } = this.props;
     const url    = URL.createObjectURL(this.file);
     const canvas = document.createElement('canvas');
 
@@ -101,9 +101,15 @@ class Editor {
     }
 
     this.canvas = canvas;
-
     this.toggleBusyState();
-    this.caman = Caman(this.canvas, url, () => {
+    this.caman = Caman(this.canvas, url, (caman) => {
+      const { originalWidth, originalHeight } = caman;
+      const ratio  = originalWidth / originalHeight;
+      const width  = originalWidth > imageMaxSize ? imageMaxSize : originalWidth;
+      const height = Math.round(width / ratio);
+
+      caman.resize({ width, height }).render();
+
       this.toggleBusyState();
       this.root.classList.add(hasImageClass);
     });
@@ -117,7 +123,8 @@ Editor.defaults = {
   filtersContainer: '.editor-presets',
   canvasContainer: '.editor-canvas-container',
   triggerReset: '.editor-reset',
-  fileInput: 'input[type="file"]'
+  fileInput: 'input[type="file"]',
+  imageMaxSize: 1200
 };
 
 Editor.FILTERS = [
