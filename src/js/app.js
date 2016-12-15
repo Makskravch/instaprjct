@@ -1,6 +1,6 @@
 'use strict';
 
-(() => {
+(function() {
 
   firebase.initializeApp({
     apiKey: 'AIzaSyDdklaao0vq0DcAkCXzYFoZeVJTy9kOoGA',
@@ -47,4 +47,4 @@
     unsubsribe();
   });
 
-})();
+} ());

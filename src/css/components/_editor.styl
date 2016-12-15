@@ -171,7 +171,11 @@
 
   &-reset
     display none
-    margin-top 12px
+    + .btn
+      margin-top 0
+
+  &-upload
+    display none
 
   &.has-image
     {$this}-uploader
@@ -179,7 +183,8 @@
 
     {$this}-canvas-container,
     {$this}-presets,
-    {$this}-reset
+    {$this}-reset,
+    {$this}-upload
       display block
 
   &.is-busy

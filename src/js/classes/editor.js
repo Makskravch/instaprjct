@@ -6,6 +6,7 @@ class Editor {
     this.filtersContainer = qs(this.props.filtersContainer, this.root);
     this.fileInput        = qs(this.props.fileInput, this.root);
     this.triggerReset     = qs(this.props.triggerReset, this.root);
+    this.triggerUpload    = qs(this.props.triggerUpload, this.root);
     this.file             = null;
     this.filter           = null;
     this._processing      = false;
@@ -20,8 +21,44 @@ class Editor {
     console.log(this);
   }
 
+  applyFilter(filter, cb = noop) {
+    if (!(filter in this.caman)) {
+      console.log(`There is no filter with name "${filter}"`);
+      return;
+    }
+
+    if (this.filter === filter || this._processing) {
+      return;
+    }
+
+    this._processing = true;
+    this._toggleBusyState();
+    this.caman.revert();
+    this.caman[filter]();
+    this.caman.render(() => {
+      this._processing = false;
+      this._toggleBusyState();
+      this.filter = filter;
+      this._highlightActiveFilter();
+      cb();
+    });
+  }
+
+  resetFilter() {
+    if (!this.filter) return;
+    this.filter = null;
+    this.caman && this.caman.revert();
+    this._highlightActiveFilter();
+    this.triggerReset.style.display = 'none';
+  }
+
+  upload() {
+    console.log(this, 'uploading');
+  }
+
   _bindEvents() {
     this.triggerReset.addEventListener('click', (e) => this.resetFilter(e));
+    this.triggerUpload.addEventListener('click', (e) => this.upload(e));
     this.fileInput.addEventListener('change', e => this._onFileChange(e));
     delegate(
       this.filtersContainer,
@@ -34,7 +71,7 @@ class Editor {
   _onFileChange(e) {
     this.file = this.fileInput.files[0];
     console.log(this.file);
-    this.init();
+    this._initEditor();
   }
 
   _onFilterClick(e) {
@@ -55,41 +92,17 @@ class Editor {
     this.triggerReset.style.display = '';
   }
 
-  resetFilter() {
-    this.filter = null;
-    this.caman && this.caman.revert();
-    this._highlightActiveFilter();
-    this.triggerReset.style.display = 'none';
+  _toggleBusyState() {
+    const { busyClass } = this.props;
+    const isBusy   = this.root.classList.contains(busyClass);
+    const triggers = [this.triggerReset, this.triggerUpload];
+    const method   = isBusy ? 'removeAttribute' : 'setAttribute';
+
+    this.root.classList.toggle(busyClass);
+    triggers.forEach(el => el[method]('disabled', true));
   }
 
-  applyFilter(filter, cb = noop) {
-    if (!(filter in this.caman)) {
-      console.log(`There is no filter "${filter}"`);
-      return;
-    }
-
-    if (this.filter === filter || this._processing) {
-      return;
-    }
-
-    this._processing = true;
-    this.toggleBusyState();
-    this.caman.revert();
-    this.caman[filter]();
-    this.caman.render(() => {
-      this._processing = false;
-      this.toggleBusyState();
-      this.filter = filter;
-      this._highlightActiveFilter();
-      cb();
-    });
-  }
-
-  toggleBusyState() {
-    this.root.classList.toggle(this.props.busyClass);
-  }
-
-  init() {
+  _initEditor() {
     const { busyClass, hasImageClass, imageMaxSize } = this.props;
     const url    = URL.createObjectURL(this.file);
     const canvas = document.createElement('canvas');
@@ -101,7 +114,7 @@ class Editor {
     }
 
     this.canvas = canvas;
-    this.toggleBusyState();
+    this._toggleBusyState();
     this.caman = Caman(this.canvas, url, (caman) => {
       const { originalWidth, originalHeight } = caman;
       const ratio  = originalWidth / originalHeight;
@@ -110,7 +123,7 @@ class Editor {
 
       caman.resize({ width, height }).render();
 
-      this.toggleBusyState();
+      this._toggleBusyState();
       this.root.classList.add(hasImageClass);
     });
   }
@@ -123,6 +136,7 @@ Editor.defaults = {
   filtersContainer: '.editor-presets',
   canvasContainer: '.editor-canvas-container',
   triggerReset: '.editor-reset',
+  triggerUpload: '.editor-upload',
   fileInput: 'input[type="file"]',
   imageMaxSize: 1200
 };
