@@ -83,3 +83,12 @@ const delegate = (target, type, selector, handler, capture) => {
  * Empty function
  */
 const noop = () => {};
+
+/**
+ * Generate unique ID
+ * @param  {String} prefix Prefix for ID
+ * @param  {Number} len    Lenght of ID string
+ * @return {String}        ID
+ */
+const generateID = (prefix = '', len = 6) =>
+  prefix + Math.random().toString(36).slice(2, len + 2);
