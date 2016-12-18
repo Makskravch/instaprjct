@@ -7,9 +7,16 @@ class Editor {
     this.fileInput        = qs(this.props.fileInput, this.root);
     this.triggerReset     = qs(this.props.triggerReset, this.root);
     this.triggerUpload    = qs(this.props.triggerUpload, this.root);
+    this.progressBar      = qs(this.props.progressBar, this.root);
     this.file             = null;
     this.filter           = null;
     this._processing      = false;
+
+    this.resetFilter       = this.resetFilter.bind(this);
+    this.upload            = this.upload.bind(this);
+    this._onFileChange     = this._onFileChange.bind(this);
+    this._onFilterClick    = this._onFilterClick.bind(this);
+    this._onUploadProgress = this._onUploadProgress.bind(this);
 
     if (!this.filtersContainer) {
       this.filtersContainer = this.root;
@@ -53,18 +60,30 @@ class Editor {
   }
 
   upload() {
-    console.log(this, 'uploading');
+    const data = this.caman.toBase64();
+    const ref  = firebase.storage().ref(`/test_upload/${this.file.name}`);
+
+    this._toggleBusyState();
+    this._toggleUploadingState();
+
+    const task = ref.putString(data, 'data_url');
+
+    task.on('state_changed', this._onUploadProgress);
+    task.then(res => {
+      this._toggleBusyState();
+      this._toggleUploadingState();
+    });
   }
 
   _bindEvents() {
-    this.triggerReset.addEventListener('click', (e) => this.resetFilter(e));
-    this.triggerUpload.addEventListener('click', (e) => this.upload(e));
-    this.fileInput.addEventListener('change', e => this._onFileChange(e));
+    this.triggerReset.addEventListener('click', this.resetFilter);
+    this.triggerUpload.addEventListener('click', this.upload);
+    this.fileInput.addEventListener('change', this._onFileChange);
     delegate(
       this.filtersContainer,
       'click',
       '[data-filter]',
-      this._onFilterClick.bind(this)
+      this._onFilterClick
     );
   }
 
@@ -79,6 +98,11 @@ class Editor {
     const { filter } = target.dataset;
     if (!filter) return;
     this.applyFilter(filter);
+  }
+
+  _onUploadProgress(snapshot) {
+    const progress = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+    this.progressBar.style.width = progress + '%';
   }
 
   _highlightActiveFilter() {
@@ -100,6 +124,10 @@ class Editor {
 
     this.root.classList.toggle(busyClass);
     triggers.forEach(el => el[method]('disabled', true));
+  }
+
+  _toggleUploadingState() {
+    this.root.classList.toggle(this.props.uploadingClass);
   }
 
   _initEditor() {
@@ -125,6 +153,8 @@ class Editor {
 
       this._toggleBusyState();
       this.root.classList.add(hasImageClass);
+
+      window._c = caman;
     });
   }
 }
@@ -133,12 +163,16 @@ Editor.defaults = {
   activeClass: 'is-active',
   busyClass: 'is-busy',
   hasImageClass: 'has-image',
-  filtersContainer: '.editor-presets',
-  canvasContainer: '.editor-canvas-container',
-  triggerReset: '.editor-reset',
-  triggerUpload: '.editor-upload',
+  uploadingClass: 'is-uploading',
+  filtersContainer: '.editor__presets',
+  canvasContainer: '.editor__canvas-container',
+  triggerReset: '.editor__reset',
+  triggerUpload: '.editor__upload',
   fileInput: 'input[type="file"]',
-  imageMaxSize: 1200
+  progressBar: '.editor__progress .progress-bar',
+  imageMaxSize: 1200,
+  onUploadDone: noop,
+  onUploadError: noop
 };
 
 Editor.FILTERS = [

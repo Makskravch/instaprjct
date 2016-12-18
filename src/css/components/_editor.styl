@@ -17,7 +17,7 @@
     max-width 600px
     margin auto
 
-  &-canvas-container
+  &__canvas-container
     display none
     width 100%
     position relative
@@ -44,7 +44,7 @@
       visibility hidden
       opacity 0
 
-  &-uploader
+  &__uploader
     display flex
     align-items center
     justify-content center
@@ -72,7 +72,7 @@
     input[type="file"]
       display none
 
-  &-presets
+  &__presets
     position relative
     display none
     margin-top 24px
@@ -97,7 +97,7 @@
       right 0
       shadow(-90deg)
 
-    &__track
+    &-track
       font-size 0
       overflow auto
       +scrollbar()
@@ -107,7 +107,7 @@
       +scrollbar-thumb()
         background #ccc
 
-    &__item
+    &-item
       display inline-block
       vertical-align top
       position relative
@@ -169,27 +169,38 @@
       &:not(:last-child)
         border-right none
 
-  &-reset
+  &__reset
     display none
     + .btn
       margin-top 0
 
-  &-upload
+  &__upload
     display none
 
+  &__progress
+    display none
+    margin 12px 0 0
+
   &.has-image
-    {$this}-uploader
+    {$this}__uploader
       display none
 
-    {$this}-canvas-container,
-    {$this}-presets,
-    {$this}-reset,
-    {$this}-upload
+    {$this}__canvas-container,
+    {$this}__presets,
+    {$this}__reset,
+    {$this}__upload
       display block
 
   &.is-busy
-    {$this}-canvas-container
+    {$this}__canvas-container
       &:before
       .fa
         visibility visible
         opacity 1
+
+  &.is-uploading
+    {$this}__controls
+      display none
+
+    {$this}__progress
+      display block
