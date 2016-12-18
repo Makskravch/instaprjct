@@ -2,6 +2,7 @@ class Editor {
   constructor(el, props) {
     this.root             = isDomElement(el) ? el : qs(el);
     this.props            = Object.assign({}, Editor.defaults, props);
+    this.userID           = firebase.auth().currentUser.uid;
     this.canvasContainer  = qs(this.props.canvasContainer, this.root);
     this.filtersContainer = qs(this.props.filtersContainer, this.root);
     this.fileInput        = qs(this.props.fileInput, this.root);
@@ -13,7 +14,8 @@ class Editor {
     this._processing      = false;
 
     this.resetFilter       = this.resetFilter.bind(this);
-    this.upload            = this.upload.bind(this);
+    this.save              = this.save.bind(this);
+    this._upload           = this._upload.bind(this);
     this._onFileChange     = this._onFileChange.bind(this);
     this._onFilterClick    = this._onFilterClick.bind(this);
     this._onUploadProgress = this._onUploadProgress.bind(this);
@@ -59,9 +61,14 @@ class Editor {
     this.triggerReset.style.display = 'none';
   }
 
-  upload() {
-    const data = this.caman.toBase64();
-    const ref  = firebase.storage().ref(`/test_upload/${this.file.name}`);
+  save() {
+    // const dbRef = firebase.database().ref(`posts/`)
+    this._upload();
+  }
+
+  _upload() {
+    const data = this.caman.toBase64('jpg');
+    const ref  = firebase.storage().ref(`/pictures/${this.userID}/${Date.now()}.jpg`);
 
     this._toggleBusyState();
     this._toggleUploadingState();
@@ -70,6 +77,7 @@ class Editor {
 
     task.on('state_changed', this._onUploadProgress);
     task.then(res => {
+      console.log(res);
       this._toggleBusyState();
       this._toggleUploadingState();
     });
@@ -77,7 +85,7 @@ class Editor {
 
   _bindEvents() {
     this.triggerReset.addEventListener('click', this.resetFilter);
-    this.triggerUpload.addEventListener('click', this.upload);
+    this.triggerUpload.addEventListener('click', this.save);
     this.fileInput.addEventListener('change', this._onFileChange);
     delegate(
       this.filtersContainer,
