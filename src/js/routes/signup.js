@@ -10,12 +10,14 @@ function signup(ctx, next) {
   const submitBtn       = qs('[type="submit"]', signupForm);
   const errorsContainer = qs('#errors', signupForm);
 
-  const errors = {
-    'confirmation-error': 'Password must be the same in both fields'
+  const messages = {
+    'invalid-email': 'Email is invalid',
+    'short-password': 'Password must be at least 6 characters',
+    'confirmation-error': 'Wrong password'
   };
 
-  function renderError(error) {
-    errorsContainer.innerHTML = [].concat(error).map(err => {
+  function renderError(errors = []) {
+    return [].concat(errors).map(err => {
       return `
         <li class="list-group-item list-group-item-danger">
           <span>${err}</span>
@@ -24,17 +26,14 @@ function signup(ctx, next) {
     }).join('');
   }
 
-  function showError(error) {
+  function showErrors(errors) {
     // render all error messages
-    renderError(error);
-
+    errorsContainer.innerHTML = renderError(errors);
     // show error container
-    if (errorsContainer.hidden) {
-      errorsContainer.hidden = false;
-    }
+    errorsContainer.hidden = false;
   }
 
-  function hideError(errorName) {
+  function hideErrors(errorName) {
     errorsContainer.innerHTML = '';
     errorsContainer.hidden = true;
   }
@@ -55,27 +54,40 @@ function signup(ctx, next) {
     usersRef.set(userData)
       .then(() => {
         user.sendEmailVerification();
-        page('/profile');
+        page.redirect('/profile');
       });
   }
 
   function onUserCreationError(error) {
     unsetLoadingState();
-    showError(error.message);
+    showErrors(error.message);
   }
 
   signupForm.addEventListener('submit', (e) => {
-    const form = e.target;
+    const errors = [];
+    const form   = e.target;
     const { email, password, password_confirm } = form.elements;
 
     e.preventDefault();
 
+    if (email.value.indexOf('@') === -1) {
+      errors.push('Email is invalid');
+    }
+
+    if (password.value.length < 6) {
+      errors.push('Password must be at least 6 characters');
+    }
+
     if (password.value !== password_confirm.value) {
-      return showError(errors['confirmation-error']);
+      errors.push('Wrong password');
+    }
+
+    if (errors.length) {
+      return showErrors(errors);
     }
 
     setLoadingState();
-    hideError();
+    hideErrors();
     auth
       .createUserWithEmailAndPassword(email.value, password.value)
       .then(onUserCreated)
