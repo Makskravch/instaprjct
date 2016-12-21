@@ -10,12 +10,6 @@ function signup(ctx, next) {
   const submitBtn       = qs('[type="submit"]', signupForm);
   const errorsContainer = qs('#errors', signupForm);
 
-  const messages = {
-    'invalid-email': 'Email is invalid',
-    'short-password': 'Password must be at least 6 characters',
-    'confirmation-error': 'Wrong password'
-  };
-
   function renderError(errors = []) {
     return [].concat(errors).map(err => {
       return `
