@@ -5,14 +5,14 @@ const autoprefixer = require('autoprefixer');
 const sourcemaps   = require('gulp-sourcemaps');
 const concat       = require('gulp-concat');
 const include      = require('gulp-include');
-const order        = require('gulp-order');
 const gutil        = require('gulp-util');
 const plumber      = require('gulp-plumber');
 const notify       = require('gulp-notify');
-const cache        = require('gulp-cached');
 const handlebars   = require('gulp-handlebars');
 const wrap         = require('gulp-wrap');
 const declare      = require('gulp-declare');
+const cache        = require('gulp-cached');
+const eslint       = require('gulp-eslint');
 const merge        = require('merge-stream');
 const sequence     = require('run-sequence');
 const path         = require('path');
@@ -31,7 +31,7 @@ const errorHandler = (title = 'Error') => plumber({
 gulp.task('server', () => {
   server.init({
     server: {
-      baseDir: 'public',
+      baseDir: ['public', 'src'],
       routes: {
         '/libs': 'node_modules'
       }
@@ -65,14 +65,46 @@ gulp.task('styles', () => {
 });
 
 
-gulp.task('scripts', () => {
+const bundleScripts = (src) => {
   return gulp
-    .src('src/js/app.js')
+    .src(src)
     .pipe(errorHandler())
     .pipe(sourcemaps.init())
-    .pipe(include())
+    .pipe(include({
+      includePaths: [
+        path.join(__dirname, 'node_modules'),
+        path.join(__dirname, 'src', 'js')
+      ]
+    }))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('public/js'));
+};
+
+gulp.task('scripts:vendor', () => {
+  return bundleScripts('src/js/vendor.js');
+});
+
+gulp.task('scripts:app', () => {
+  return bundleScripts('src/js/app.js');
+});
+
+gulp.task('scripts', [
+  'scripts:vendor',
+  'scripts:app'
+]);
+
+
+gulp.task('lint', () => {
+  return gulp
+    .src([
+      'src/js/**/*.js',
+      '!src/js/vendor.js',
+      '!node_modules/**'
+    ])
+    .pipe(errorHandler())
+    .pipe(cache('lint'))
+    .pipe(eslint())
+    .pipe(eslint.format());
 });
 
 
@@ -111,10 +143,28 @@ gulp.task('templates', () => {
     .pipe(gulp.dest('public/js'));
 });
 
-
-gulp.task('html', () => {
+gulp.task('static:html', () => {
   return gulp
     .src('src/index.html')
+    .pipe(errorHandler())
+    .pipe(gulp.dest('public'));
+});
+
+gulp.task('static:fonts', () => {
+  return gulp
+    .src([
+      'node_modules/font-awesome/fonts/*.{woff2,woff}',
+      'node_modules/bootstrap/dist/fonts/*.{woff2,woff}'
+    ])
+    .pipe(errorHandler())
+    .pipe(gulp.dest('public/fonts'));
+});
+
+gulp.task('static', ['static:html', 'static:fonts'], () => {
+  return gulp
+    .src([
+      'src/favicon.ico'
+    ])
     .pipe(errorHandler())
     .pipe(gulp.dest('public'));
 });
@@ -132,8 +182,9 @@ gulp.task('build', (cb) => {
     'clean',
     'styles',
     'scripts',
+    'lint',
     'templates',
-    'html',
+    'static',
     cb
   );
 });
@@ -141,8 +192,9 @@ gulp.task('build', (cb) => {
 
 gulp.task('watch', () => {
   gulp.watch('src/css/**/*.styl', ['styles']);
-  gulp.watch('src/js/**/*.js', ['scripts']);
-  gulp.watch('src/index.html', ['html']);
+  gulp.watch(['src/js/**/*.js', '!src/js/vendor.js'], ['scripts:app', 'lint']);
+  gulp.watch('!src/js/vendor.js', ['scripts:vendor']);
+  gulp.watch('src/index.html', ['static:html']);
   gulp.watch('src/templates/**/*.hbs', ['templates']);
 });
 

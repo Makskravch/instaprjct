@@ -4,36 +4,48 @@
     $gap = $base-gap * $i
 
     &-mt-{$i},
-    &-my-{$i}
+    &-my-{$i},
+    &-m-{$i}
       margin-top $gap
 
     &-mb-{$i},
-    &-my-{$i}
+    &-my-{$i},
+    &-m-{$i}
       margin-bottom $gap
 
     &-ml-{$i},
-    &-mx-{$i}
+    &-mx-{$i},
+    &-m-{$i}
       margin-left $gap
 
     &-mr-{$i},
-    &-mx-{$i}
+    &-mx-{$i},
+    &-m-{$i}
       margin-right $gap
 
     &-pt-{$i},
-    &-py-{$i}
+    &-py-{$i},
+    &-p-{$i}
       padding-top $gap
 
     &-pb-{$i},
-    &-py-{$i}
+    &-py-{$i},
+    &-p-{$i}
       padding-bottom $gap
 
     &-pl-{$i},
-    &-px-{$i}
+    &-px-{$i},
+    &-p-{$i}
       padding-left $gap
 
     &-pr-{$i},
-    &-px-{$i}
+    &-px-{$i},
+    &-p-{$i}
       padding-right $gap
+
+  &-mx-auto
+    margin-left auto
+    margin-right auto
 
   // text utitlites
   &-text
@@ -77,3 +89,8 @@
       margin-left - $gap
       > *
         margin-left $gap
+
+  // display
+  for $prop in block inline-block inline
+    &-{$prop}
+      display $prop

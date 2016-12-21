@@ -2,6 +2,18 @@ body
   min-width 800px
   background $main-bg-color
 
+$font-awesome
+  display inline-block
+  font normal normal normal 14px/1 FontAwesome
+  font-size inherit
+  text-rendering auto
+  -webkit-font-smoothing antialiased
+  -moz-osx-font-smoothing grayscale
+
+fa-icon($code)
+  @extend $font-awesome
+  content "\" + $code
+
 .btn
   for pair in (xs 5) (sm 7) (md 10) (lg 14)
     &-mw-{pair[0]}
@@ -9,6 +21,7 @@ body
 
 .container-fluid
   padding-top 80px
+  padding-bottom 20px
 
 .dropdown-toggle
   .img-circle
