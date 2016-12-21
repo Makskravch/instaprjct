@@ -34,7 +34,7 @@ const FormField = (function() {
    * Set of validation rules
    * Each of rule return true if valid, or error message
    */
-  const validator = {
+  const validationRules = {
     email: (s) => EMAIL_RE.test(s) || messages.email,
     minLength: (s, len = 6) => s.length >= len || messages.minLength.replace('{n}', len),
     maxLength: (s, len = 100) => s.length <= len || messages.maxLength.replace('{n}', len),
@@ -172,7 +172,7 @@ const FormField = (function() {
       if (type === 'string' || Array.isArray(validate)) {
         [].concat(validate).forEach(str => {
           const { name, params } = parseRuleFromString(str);
-          const fn = validator[name];
+          const fn = validationRules[name];
           if (fn) {
             this.rules.push({ name, fn, params });
           }
@@ -196,6 +196,11 @@ const FormField = (function() {
         );
       }
 
+      /**
+       * Check given value with set of validation rules
+       * @param  {String} value
+       * @return {Boolean|Array} true if valid or array of error messages
+       */
       this._validate = (value) => {
         const errors = this.rules.reduce((acc, { name, fn, params = [] }) => {
           const res = fn(value, ...params);
