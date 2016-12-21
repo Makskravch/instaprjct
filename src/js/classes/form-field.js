@@ -10,6 +10,11 @@ const FormField = (function() {
 
   const RULE_PARAM_RE = /\[.*\]$/; // match 'ruleName[param1, param2]'
 
+  /**
+   * Parse string like 'maxLength[10]' into { name: 'maxLength', params: [10]}
+   * @param  {Sting} str Source string that need to be parsed
+   * @return {Object}    Object with name of rule and his parameters
+   */
   const parseRuleFromString = (str) => {
     const match = str.match(RULE_PARAM_RE);
     const name = str.replace(RULE_PARAM_RE, '');
@@ -25,6 +30,10 @@ const FormField = (function() {
     number: 'Field can contain only numbers'
   };
 
+  /**
+   * Set of validation rules
+   * Each of rule return true if valid, or error message
+   */
   const validator = {
     email: (s) => EMAIL_RE.test(s) || messages.email,
     minLength: (s, len = 6) => s.length >= len || messages.minLength.replace('{n}', len),
@@ -63,13 +72,17 @@ const FormField = (function() {
       return !this._hasError;
     }
 
+    /**
+     * Validate field
+     * @return {Boolean|String} true if valid or error message if invalid
+     */
     validate() {
-      const value = this.control.value;
+      const { value } = this.control;
       this.resetState();
 
       // discard validation if field is not required and has empty value
       if (value === '' && !this._required) return true;
-      const result = this._validator(value);
+      const result = this._validate(value);
 
       if (result === true) {
         this.setValidState();
@@ -183,7 +196,7 @@ const FormField = (function() {
         );
       }
 
-      this._validator = (value) => {
+      this._validate = (value) => {
         const errors = this.rules.reduce((acc, { name, fn, params = [] }) => {
           const res = fn(value, ...params);
           // if valid
