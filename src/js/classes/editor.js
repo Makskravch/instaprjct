@@ -2,7 +2,6 @@ class Editor {
   constructor(el, props) {
     this.root             = isDomElement(el) ? el : qs(el);
     this.props            = Object.assign({}, Editor.defaults, props);
-    this.userID           = firebase.auth().currentUser.uid;
     this.canvasContainer  = qs(this.props.canvasContainer, this.root);
     this.filtersContainer = qs(this.props.filtersContainer, this.root);
     this.fileInput        = qs(this.props.fileInput, this.root);
@@ -15,7 +14,6 @@ class Editor {
 
     this.resetFilter       = this.resetFilter.bind(this);
     this.save              = this.save.bind(this);
-    this._upload           = this._upload.bind(this);
     this._onFileChange     = this._onFileChange.bind(this);
     this._onFilterClick    = this._onFilterClick.bind(this);
     this._onUploadProgress = this._onUploadProgress.bind(this);
@@ -62,25 +60,49 @@ class Editor {
   }
 
   save() {
-    // const dbRef = firebase.database().ref(`posts/`)
-    this._upload();
-  }
+    const id          = generateID('', 12);
+    const userId      = firebase.auth().currentUser.uid;
+    const dbPath      = `/posts/${id}`;
+    const storagePath = `/pictures/${userId}/${id}.jpg`;
+    const storageRef  = firebase.storage().ref(storagePath);
+    const dbRef       = firebase.database().ref(dbPath);
 
-  _upload() {
-    const data = this.caman.toBase64('jpg');
-    const ref  = firebase.storage().ref(`/pictures/${this.userID}/${Date.now()}.jpg`);
-
+    // show spinner and progress bar
     this._toggleBusyState();
     this._toggleUploadingState();
 
-    const task = ref.putString(data, 'data_url');
+    // upload image to firebase as base64 encoded string
+    const uploadTask = storageRef.putString(
+      this.caman.toBase64('.jpg'),
+      'data_url'
+    );
 
-    task.on('state_changed', this._onUploadProgress);
-    task.then(res => {
-      console.log(res);
-      this._toggleBusyState();
-      this._toggleUploadingState();
-    });
+    // show progress while uploading
+    uploadTask.on('state_changed', this._onUploadProgress);
+
+    uploadTask
+      // create entry in firebase database after successfull upload
+      .then(snapshot => {
+        const { name, timeCreated, downloadURLs } = snapshot.metadata;
+        return dbRef.set({
+          id,
+          name,
+          user: userId,
+          created: timeCreated,
+          url: downloadURLs[0]
+        });
+      })
+      // hide spinner and progress bar
+      .then(() => {
+        this._toggleBusyState();
+        this._toggleUploadingState();
+        this.props.onSave();
+      })
+      // handle error while uploading or entry creation
+      .catch(error => {
+        console.log(error);
+        this.props.onError(error);
+      });
   }
 
   _bindEvents() {
@@ -179,8 +201,8 @@ Editor.defaults = {
   fileInput: 'input[type="file"]',
   progressBar: '.editor__progress .progress-bar',
   imageMaxSize: 1200,
-  onUploadDone: noop,
-  onUploadError: noop
+  onSave: noop,
+  onError: noop
 };
 
 Editor.FILTERS = [
