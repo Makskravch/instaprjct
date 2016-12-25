@@ -62,9 +62,9 @@ class Editor {
 
   save() {
     const id          = generateID('', 12);
-    const userId      = firebase.auth().currentUser.uid;
+    const user        = firebase.auth().currentUser;
     const dbPath      = `/posts/${id}`;
-    const storagePath = `/pictures/${userId}/${id}.jpg`;
+    const storagePath = `/pictures/${user.uid}/${id}.jpg`;
     const storageRef  = firebase.storage().ref(storagePath);
     const dbRef       = firebase.database().ref(dbPath);
 
@@ -84,11 +84,11 @@ class Editor {
     uploadTask
       // create entry in firebase database after successfull upload
       .then(snapshot => {
-        const { name, timeCreated, downloadURLs, fullPath } = snapshot.metadata;
+        const { timeCreated, downloadURLs, fullPath } = snapshot.metadata;
         return dbRef.set({
           id,
-          name,
-          user: userId,
+          // author: { name: user.displayName, uid: user.uid },
+          author: user.uid,
           created: timeCreated,
           url: downloadURLs[0],
           caption: this.caption.value.trim(),
@@ -123,7 +123,6 @@ class Editor {
 
   _onFileChange(e) {
     this.file = this.fileInput.files[0];
-    console.log(this.file);
     this._initEditor();
   }
 

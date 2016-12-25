@@ -1,9 +1,13 @@
 {{> header}}
 
+{{#if posts}}
+<div class="feed" id="feed">
+  {{#each posts}}
+  {{> post @this}}
+  {{/each}}
+</div>
+{{else}}
 <div class="welcome-screen">
   <h1 class="welcome-screen__logotype logotype"><div class="sr-only">Instaprjct</div></h1>
 </div>
-
-<div class="feed">
-  {{> post}}
-</div>
+{{/if}}

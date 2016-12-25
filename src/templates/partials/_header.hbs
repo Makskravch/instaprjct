@@ -1,15 +1,19 @@
 <header class="header">
   <div class="header__inner">
 
-    <a href="/" class="header__logo logotype">
-      <span class="sr-only">Instaprjct</span>
-    </a>
+    <div class="header__left">
+      <a href="/" class="header__logo logotype">
+        <span class="sr-only">Instaprjct</span>
+      </a>
+      {{#if user}}
+      <a href="/add" class="btn btn-default btn-xs">
+        <i class="fa fa-plus"></i>
+        <span>Add photo</span>
+      </a>
+      {{/if}}
+    </div>
 
     {{#if user}}
-    <a href="/add" class="btn btn-default btn-sm">
-      <i class="fa fa-plus"></i>
-      <span>Add photo</span>
-    </a>
     <div class="header-user dropdown">
       <div class="header-user__main" data-toggle="dropdown">
         {{#if user.photoURL}}
