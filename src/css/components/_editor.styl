@@ -56,7 +56,7 @@
     font-size 26px
     cursor pointer
 
-    &__inner
+    &-inner
       position relative
 
     .fa-picture-o
@@ -71,6 +71,10 @@
 
     input[type="file"]
       display none
+
+  &__caption
+    margin 8px 0
+    display none
 
   &__presets
     position relative
@@ -186,6 +190,7 @@
       display none
 
     {$this}__canvas-container,
+    {$this}__caption,
     {$this}__presets,
     {$this}__reset,
     {$this}__upload
@@ -200,7 +205,8 @@
 
   &.is-uploading
     {$this}__controls,
-    {$this}__presets
+    {$this}__presets,
+    {$this}__caption
       display none
 
     {$this}__progress

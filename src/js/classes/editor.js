@@ -8,6 +8,7 @@ class Editor {
     this.triggerReset     = qs(this.props.triggerReset, this.root);
     this.triggerUpload    = qs(this.props.triggerUpload, this.root);
     this.progressBar      = qs(this.props.progressBar, this.root);
+    this.caption          = qs(this.props.caption, this.root);
     this.file             = null;
     this.filter           = null;
     this._processing      = false;
@@ -83,13 +84,16 @@ class Editor {
     uploadTask
       // create entry in firebase database after successfull upload
       .then(snapshot => {
-        const { name, timeCreated, downloadURLs } = snapshot.metadata;
+        const { name, timeCreated, downloadURLs, fullPath } = snapshot.metadata;
         return dbRef.set({
           id,
           name,
           user: userId,
           created: timeCreated,
-          url: downloadURLs[0]
+          url: downloadURLs[0],
+          caption: this.caption.value.trim(),
+          filterName: this.filter,
+          storagePath: fullPath
         });
       })
       // hide spinner and progress bar
@@ -200,6 +204,7 @@ Editor.defaults = {
   triggerUpload: '.editor__upload',
   fileInput: 'input[type="file"]',
   progressBar: '.editor__progress .progress-bar',
+  caption: '.editor__caption textarea',
   imageMaxSize: 1200,
   onSave: noop,
   onError: noop
