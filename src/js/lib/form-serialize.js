@@ -1,3 +1,4 @@
+/* eslint-disable */
 const formSerialize = (function() {
   // get successful control from form and assemble into object
   // http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2

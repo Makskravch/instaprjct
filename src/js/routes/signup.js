@@ -60,7 +60,8 @@ function signup(ctx, next) {
   signupForm.addEventListener('submit', (e) => {
     const errors = [];
     const form   = e.target;
-    const { email, password, password_confirm } = form.elements;
+    // eslint-disable-next-line camelcase
+    const { email, password, password_confirm: confirm } = form.elements;
 
     e.preventDefault();
 
@@ -72,7 +73,7 @@ function signup(ctx, next) {
       errors.push('Password must be at least 6 characters');
     }
 
-    if (password.value !== password_confirm.value) {
+    if (password.value !== confirm.value) {
       errors.push('Wrong password');
     }
 
