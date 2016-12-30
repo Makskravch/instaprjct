@@ -1,22 +1,22 @@
-<article class="post">
-  <header class="post__header">
-    <div class="post__author">
-      <div class="post__author-pic"></div>
-      <span class="post__author-name">{{ author }}</span>
-    </div>
-    <span class="post__time">{{ created }}</span>
-  </header>
-
-  <div class="post__content">
-    <img src="{{ url }}" alt="{{ name }}">
+{{!-- <article class="post"> --}}
+<header class="post__header">
+  <div class="post__author">
+    <div class="post__author-pic"></div>
+    <span class="post__author-name">{{ author }}</span>
   </div>
+  <span class="post__time">{{ created }}</span>
+</header>
 
-  <footer class="post__footer">
-    <ul class="post__comments-list">
-      <li class="post__comment">
-        <span class="post__comment-author">{{ caption }}</span>
-        <span class="post__comment-text">Lorem ipsum dolor sit amet.</span>
-      </li>
-    </ul>
-  </footer>
-</article>
+<div class="post__content">
+  <img src="{{ url }}" alt="{{ name }}">
+</div>
+
+<footer class="post__footer">
+  <ul class="post__comments-list">
+    <li class="post__comment">
+      <span class="post__comment-author">{{ caption }}</span>
+      <span class="post__comment-text">Lorem ipsum dolor sit amet.</span>
+    </li>
+  </ul>
+</footer>
+{{!-- </article> --}}
