@@ -19,17 +19,13 @@ class Editor {
     this._onFilterClick    = this._onFilterClick.bind(this);
     this._onUploadProgress = this._onUploadProgress.bind(this);
 
-    if (!this.filtersContainer) {
-      this.filtersContainer = this.root;
-    }
-
     this.triggerReset.style.display = 'none';
 
     this._bindEvents();
     console.log(this);
   }
 
-  applyFilter(filter, cb = noop) {
+  applyFilter(filter) {
     if (!(filter in this.caman)) {
       console.log(`There is no filter with name "${filter}"`);
       return;
@@ -48,7 +44,6 @@ class Editor {
       this._toggleBusyState();
       this.filter = filter;
       this._highlightActiveFilter();
-      cb();
     });
   }
 
@@ -186,8 +181,6 @@ class Editor {
 
       this._toggleBusyState();
       this.root.classList.add(hasImageClass);
-
-      window._c = caman;
     });
   }
 }
