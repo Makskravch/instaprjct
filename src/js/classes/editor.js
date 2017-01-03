@@ -56,12 +56,22 @@ class Editor {
   }
 
   save() {
-    const id          = generateID('', 12);
+    const id          = generateID('post-');
     const user        = firebase.auth().currentUser;
     const dbPath      = `/posts/${id}`;
     const storagePath = `/pictures/${user.uid}/${id}.jpg`;
     const storageRef  = firebase.storage().ref(storagePath);
     const dbRef       = firebase.database().ref(dbPath);
+    const caption     = this.caption.value.trim();
+
+    const comments = caption ? [{
+      id: generateID('comment-'),
+      author: user.displayName,
+      authorId: user.uid,
+      value: caption,
+      created: moment().toJSON(),
+      edited: false
+    }]: [];
 
     // show spinner and progress bar
     this._toggleBusyState();
@@ -82,13 +92,16 @@ class Editor {
         const { timeCreated, downloadURLs, fullPath } = snapshot.metadata;
         return dbRef.set({
           id,
-          // author: { name: user.displayName, uid: user.uid },
           author: user.uid,
           created: timeCreated,
           url: downloadURLs[0],
-          caption: this.caption.value.trim(),
           filterName: this.filter,
-          storagePath: fullPath
+          storagePath: fullPath,
+          dimensions: {
+            width: this.caman.width,
+            height: this.caman.height
+          },
+          comments
         });
       })
       // hide spinner and progress bar
