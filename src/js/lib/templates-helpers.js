@@ -33,4 +33,8 @@
       .join(' ');
   });
 
+  Handlebars.registerHelper('formatDate', (dateString) => {
+    return moment(dateString).fromNow(true);
+  });
+
 } ());

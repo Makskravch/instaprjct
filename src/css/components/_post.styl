@@ -37,13 +37,23 @@
     align-items center
 
     &-pic
+      position relative
       width 30px
       height 30px
       margin-right 8px
       border 1px solid $c-border
-      background $c-bg embedurl('../../img/user.svg') no-repeat center
+      // background $c-bg embedurl('../../img/user.svg') no-repeat center
+      background $c-bg
       background-size 60%
       border-radius 50%
+      overflow hidden
+
+      > img
+        position absolute
+        top 50%
+        left 50%
+        transform translate(-50%, -50%)
+        height 100%
 
     &-name
       font-weight 500

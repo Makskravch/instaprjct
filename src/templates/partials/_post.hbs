@@ -1,10 +1,16 @@
 {{!-- <article class="post"> --}}
 <header class="post__header">
   <div class="post__author">
-    <div class="post__author-pic"></div>
-    <span class="post__author-name">{{ author }}</span>
+    <div class="post__author-pic">
+      {{#if author.photoURL}}
+      <img src="{{ author.photoURL }}" alt="Users avatar picture">
+      {{else}}
+      <img src="img/user.svg" alt="Default users avatar picture">
+      {{/if}}
+    </div>
+    <span class="post__author-name">{{ author.displayName }}</span>
   </div>
-  <span class="post__time">{{ created }}</span>
+  <span class="post__time">{{ formatDate created }}</span>
 </header>
 
 <div class="post__content">
@@ -13,10 +19,12 @@
 
 <footer class="post__footer">
   <ul class="post__comments-list">
-    <li class="post__comment">
-      <span class="post__comment-author">{{ caption }}</span>
-      <span class="post__comment-text">Lorem ipsum dolor sit amet.</span>
+    {{#each comments}}
+     <li class="post__comment">
+      <span class="post__comment-author">{{ this.author }}</span>
+      <span class="post__comment-text">{{ this.value }}</span>
     </li>
+    {{/each}}
   </ul>
 </footer>
 {{!-- </article> --}}
