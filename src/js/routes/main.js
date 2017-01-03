@@ -1,9 +1,10 @@
 function main(ctx, next) {
-  // if (!ctx.user) {
-  //   return render('main');
-  // }
-
   render('main');
+
+  if (!ctx.user) {
+    return;
+  }
+
   const feed  = qs('#feed');
   const dbRef = firebase.database().ref();
 
