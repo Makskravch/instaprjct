@@ -55,6 +55,26 @@ class Editor {
     this.triggerReset.style.display = 'none';
   }
 
+  _getComments() {
+    const caption = this.caption.value.trim();
+
+    if (!caption) return {};
+
+    const user      = firebase.auth().currentUser;
+    const commentId = generateID('comment-');
+
+    return {
+      [commentId]: {
+        id: commentId,
+        author: user.displayName,
+        authorId: user.uid,
+        value: caption,
+        created: moment().toJSON(),
+        edited: false
+      }
+    };
+  }
+
   save() {
     const id          = generateID('post-');
     const user        = firebase.auth().currentUser;
@@ -62,16 +82,6 @@ class Editor {
     const storagePath = `/pictures/${user.uid}/${id}.jpg`;
     const storageRef  = firebase.storage().ref(storagePath);
     const dbRef       = firebase.database().ref(dbPath);
-    const caption     = this.caption.value.trim();
-
-    const comments = caption ? [{
-      id: generateID('comment-'),
-      author: user.displayName,
-      authorId: user.uid,
-      value: caption,
-      created: moment().toJSON(),
-      edited: false
-    }]: [];
 
     // show spinner and progress bar
     this._toggleBusyState();
@@ -101,7 +111,7 @@ class Editor {
             width: this.caman.width,
             height: this.caman.height
           },
-          comments
+          comments: this._getComments()
         });
       })
       // hide spinner and progress bar
