@@ -9,6 +9,7 @@ class Post {
 
     this._setupDomElement();
     this._setupDbRef(post);
+    this._bindEvents();
     this.render();
   }
 
@@ -56,6 +57,27 @@ class Post {
     this.dbRef = firebase.database().ref(`posts/${id}`);
     this.dbRef.once('value', this._onDataRetrieved.bind(this));
     this.dbRef.on('child_changed', this._onDataChanged.bind(this));
+  }
+
+  _addComment(value = '') {
+    const id = generateID('comment-');
+    const user = firebase.auth().currentUser;
+    this.dbRef.child(`comments/${id}`).set({
+      id: id,
+      author: user.displayName,
+      authorId: user.uid,
+      value,
+      created: moment().toJSON(),
+      edited: false
+    }).then(() => this.render());
+  }
+
+  _bindEvents() {
+    delegate(this.element, 'submit', 'form', (e) => {
+      const value = e.delegateTarget.elements['comment'].value.trim();
+      if (value) this._addComment(value);
+      e.preventDefault();
+    });
   }
 }
 

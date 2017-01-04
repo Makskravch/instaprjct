@@ -19,12 +19,16 @@
 
 <footer class="post__footer">
   <ul class="post__comments-list">
-    {{#each comments}}
+    {{#each (sortBy comments 'created')}}
      <li class="post__comment">
       <span class="post__comment-author">{{ this.author }}</span>
       <span class="post__comment-text">{{ this.value }}</span>
+      <small class="post__comment-time">{{ formatDate this.created }}</small>
     </li>
     {{/each}}
   </ul>
+  <form class="post__add-comment">
+    <input type="text" name="comment" placeholder="Add a comment...">
+  </form>
 </footer>
 {{!-- </article> --}}
