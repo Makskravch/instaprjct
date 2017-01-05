@@ -11,9 +11,12 @@ function main(ctx, next) {
   dbRef
     .child('posts')
     .limitToLast(10)
-    .on('child_added', snapshot => {
-      const entry = snapshot.val();
-      const post = new Post(entry);
-      feed.insertBefore(post.getElement(), feed.firstElementChild);
+    .once('value', snapshot => {
+      const entries = snapshot.val();
+      if (!entries) return;
+      sortBy(entries, 'created').forEach(entry => {
+        const post = new Post(entry);
+        feed.insertBefore(post.getElement(), feed.firstElementChild);
+      });
     });
 }
