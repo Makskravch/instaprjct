@@ -66,24 +66,6 @@
     margin 0
     padding 0
 
-  &__comment
-    margin-top 8px
-
-    &:first-child
-      margin-top 0
-
-    &-author
-      font-weight 500
-
-    &-text
-      font-weight 400
-      color #555
-
-    &-time
-      font-size 12px
-      font-style italic
-      color #CCC
-
   &__add-comment
     display block
     margin-top 12px
@@ -96,3 +78,46 @@
       border none
       font inherit
       outline none
+
+
+.comment
+  $this = selector()
+
+  &
+    margin-top 8px
+    > *
+      display inline-block
+      vertical-align baseline
+
+  &:first-child
+    margin-top 0
+
+  &__author
+    font-weight 500
+
+  &__text
+    font-weight 400
+    color #555
+
+  &__time
+    font-size 12px
+    font-style italic
+    color #CCC
+
+  &__delete
+    border none
+    background none
+    padding 5px
+    margin -5px
+    color #A94442
+    visibility hidden
+    opacity 0
+    transition all 0.2s ease 0s
+    outline none
+
+  &:hover
+    {$this}__delete
+      visibility visible
+      opacity 1
+      transition-delay 0.2s
+

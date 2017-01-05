@@ -1,4 +1,5 @@
 {{!-- <article class="post"> --}}
+{{ log this }}
 <header class="post__header">
   <div class="post__author">
     <div class="post__author-pic">
@@ -20,10 +21,15 @@
 <footer class="post__footer">
   <ul class="post__comments-list">
     {{#each (sortBy comments 'created')}}
-     <li class="post__comment">
-      <span class="post__comment-author">{{ this.author }}</span>
-      <span class="post__comment-text">{{ this.value }}</span>
-      <small class="post__comment-time">{{ formatDate this.created }}</small>
+     <li class="comment" data-comment="{{ this.id }}">
+      <span class="comment__author">{{ this.author }}</span>
+      <span class="comment__text">{{ this.value }}</span>
+      <small class="comment__time">{{ formatDate this.created }}</small>
+      {{#ifCond ../currentUser.uid '===' this.authorId }}
+      <button class="comment__delete" title="Remove">
+        <span class="fa fa-times"></span>
+      </button>
+      {{/ifCond}}
     </li>
     {{/each}}
   </ul>
