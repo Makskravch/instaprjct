@@ -54,13 +54,13 @@ const isEmptyObject = (object) =>
 /**
  * Attach a handler to an event for all elements matching a selector.
  *
- * @param  {Element} target Element which the event must bubble to
- * @param  {string} selector Selector to match
- * @param  {string} type Event name
- * @param  {Function} handler Function called when the event bubbles to target
- *                            from an element matching selector
- * @param  {boolean} [capture] Capture the event
- * @return {Function}          Function for removing listener
+ * @param  {Element} target    - Element which the event must bubble to
+ * @param  {string} selector   - Selector to match
+ * @param  {string} type       - Event name
+ * @param  {Function} handler  - Function called when the event bubbles to target
+ *                               from an element matching selector
+ * @param  {boolean} [capture] - Capture the event
+ * @return {Function}          - Function for removing listener
  */
 const delegate = (target, type, selector, handler, capture) => {
   const dispatchEvent = (event) => {
@@ -91,9 +91,9 @@ const noop = () => {};
 /**
  * Generate unique ID
  *
- * @param  {String} prefix Prefix for ID
- * @param  {Number} len    Lenght of ID string
- * @return {String}        ID
+ * @param  {String} prefix - Prefix for ID
+ * @param  {Number} len    - Lenght of ID string
+ * @return {String}        - ID
  */
 const generateID = (prefix = '', len = 6) =>
   prefix + Math.random().toString(36).slice(2, len + 2);
@@ -101,8 +101,8 @@ const generateID = (prefix = '', len = 6) =>
 /**
  * Iteration over key-value pairs in target object
  *
- * @param  {Object|Array}   target object
- * @param  {Function} fn    iterator
+ * @param  {Object|Array} target - Target object.
+ * @param  {Function} fn         - Iterator
  * @return {Void}
  */
 const each = (target, fn) => {
@@ -133,4 +133,33 @@ const keys = (target) => {
  */
 const values = (target) => {
   return Object.keys(target).map(key => target[key]);
+};
+
+/**
+ * Sort collection of objects by given property name
+ *
+ * @param  {Array|Object} collection - Collection with objects
+ * @param  {string} propName         - Property name by which collection should be sorted
+ * @param  {boolean} invert          - Invert sorting direction.
+ * @return {Array}                   - Sorted collection.
+ */
+const sortBy = (collection = [], propName, invert) => {
+  console.time('sort');
+  const copy = Array.isArray(collection)
+    ? collection.slice()
+    : Object.keys(collection).map(k => collection[k]);
+
+  const sorted = copy.sort((a, b) => {
+    if (!(propName in a) || !(propName in b)) return -1;
+    if (a[propName] === b[propName]) return 0;
+    return a[propName] > b[propName] ? 1 : -1;
+  });
+
+  // strict equal with 'true' here is required
+  // because Handlebars helper always will be invoked
+  // with 'options' as last parameter, and when 'invert'
+  // is omited then 'invert' === 'options'
+  if (invert === true) sorted.reverse();
+  console.timeEnd('sort');
+  return sorted;
 };
