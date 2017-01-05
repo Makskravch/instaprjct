@@ -37,25 +37,36 @@
     return moment(dateString).fromNow(true);
   });
 
-  Handlebars.registerHelper('sortBy', (collection, propName, invert) => {
-    console.time('sort');
-    const copy = Array.isArray(collection)
-      ? collection.slice()
-      : Object.keys(collection).map(k => collection[k]);
+  Handlebars.registerHelper('sortBy', sortBy);
 
-    const sorted = copy.sort((a, b) => {
-      if (!(propName in a) || !(propName in b)) return -1;
-      if (a[propName] === b[propName]) return 0;
-      return a[propName] > b[propName] ? 1 : -1;
-    });
-
-    // strict equal with 'true' here is required
-    // because Handlebars helper always will be invoked
-    // with 'options' as last parameter, and when 'invert'
-    // is omited then 'invert' === 'options'
-    if (invert === true) sorted.reverse();
-    console.timeEnd('sort');
-    return sorted;
+  Handlebars.registerHelper('ifCond', (v1, operator, v2, options) => {
+    console.log(v1, v2);
+    switch (operator) {
+      case '==':
+        // eslint-disable-next-line eqeqeq
+        return (v1 == v2) ? options.fn(this) : options.inverse(this);
+      case '===':
+        return (v1 === v2) ? options.fn(this) : options.inverse(this);
+      case '!=':
+        // eslint-disable-next-line eqeqeq
+        return (v1 != v2) ? options.fn(this) : options.inverse(this);
+      case '!==':
+        return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+      case '<':
+        return (v1 < v2) ? options.fn(this) : options.inverse(this);
+      case '<=':
+        return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+      case '>':
+        return (v1 > v2) ? options.fn(this) : options.inverse(this);
+      case '>=':
+        return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+      case '&&':
+        return (v1 && v2) ? options.fn(this) : options.inverse(this);
+      case '||':
+        return (v1 || v2) ? options.fn(this) : options.inverse(this);
+      default:
+        return options.inverse(this);
+    }
   });
 
 } ());
