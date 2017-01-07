@@ -6,7 +6,11 @@
     <div class="profile__pic"{{#if photoURL}} style="background-image: url('{{ photoURL }}')"{{/if}}></div>
 
     <p class="profile__name">
-      {{#if displayName}}{{ displayName }}{{else}}Unnamed{{/if}}
+      {{#if displayName}}
+      {{ displayName }} <br> <small>({{ username }})</small>
+      {{else}}
+      {{ username }}
+      {{/if}}
     </p>
 
     {{#if publicEmail}}
@@ -27,9 +31,11 @@
 
     <ul class="profile__social">
       {{#each social as |v k|}}
+      {{#if v}}
       <li><a href="{{ socialLinkFor k v }}" target="_blank" title="{{ socialLinkFor k v }}">
         <i class="{{ socialIconFor k }}"></i>
       </a></li>
+      {{/if}}
       {{/each}}
     </ul>
 
