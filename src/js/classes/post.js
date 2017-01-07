@@ -7,11 +7,12 @@ class Post {
     this.props       = Object.assign({}, Post.defaults, props);
     this.tpl         = Handlebars.partials.post;
     this.currentUser = firebase.auth().currentUser.toJSON();
+    this.liked       = false; // is post liked by currentUser?
 
     this._setupDomElement();
     this._setupDbRef(post);
     this._bindEvents();
-    this.render();
+    // this.render();
   }
 
   render() {
@@ -19,7 +20,9 @@ class Post {
     this.element.innerHTML = this.tpl(
       Object.assign({}, this.data, {
         author: this.author,
-        currentUser: this.currentUser
+        currentUser: this.currentUser,
+        liked: this.liked,
+        likesCount: Object.keys((this.data && this.data.likes) || {}).length
       })
     );
     console.timeEnd('render');
@@ -39,7 +42,8 @@ class Post {
       value,
       created: moment().toJSON(),
       edited: false
-    }).then(() => this.render());
+    });
+    // .then(() => this.render());
   }
 
   removeComment(id) {
@@ -52,7 +56,29 @@ class Post {
       return alert('Only author of comment can delete it');
     }
     if (confirm('Are you sure you want to delete this comment?')) {
-      this.dbRef.child(`comments/${id}`).remove().then(() => this.render());
+      this.dbRef.child(`comments/${id}`).remove();
+        // .then(() => this.render());
+    }
+  }
+
+  toggleLike() {
+    const { uid, displayName } = this.currentUser;
+    const ref = this.dbRef.child(`likes/${uid}`);
+
+    const done = (bool) => {
+      this.liked = bool;
+      // this.render();
+    };
+
+    if (this.liked) {
+      // if post is already liked then unlike
+      ref.remove().then(() => done(false));
+    } else {
+      ref.set({
+        userName: displayName,
+        userId: uid,
+        created: moment().toJSON()
+      }).then(() => done(true));
     }
   }
 
@@ -73,9 +99,11 @@ class Post {
 
   _onDataRetrieved(snapshot) {
     this.data = snapshot.val();
-    this._fetchAutor();
+    this.author || this._fetchAutor();
     this.element.setAttribute('data-post', this.data.id);
-    console.log(this);
+    this.liked = !!(this.data.likes && this.data.likes[this.currentUser.uid]);
+    this.render();
+    console.log('data retrived', this.data);
   }
 
   _onDataChanged(snapshot) {
@@ -89,8 +117,8 @@ class Post {
   _setupDbRef(post) {
     const id = typeof post === 'string' ? post : post.id;
     this.dbRef = firebase.database().ref(`posts/${id}`);
-    this.dbRef.once('value', this._onDataRetrieved.bind(this));
-    this.dbRef.on('child_changed', this._onDataChanged.bind(this));
+    this.dbRef.on('value', this._onDataRetrieved.bind(this));
+    // this.dbRef.on('child_changed', this._onDataChanged.bind(this));
   }
 
   _bindEvents() {
@@ -106,6 +134,10 @@ class Post {
       const id = parent.dataset.comment;
       this.removeComment(id);
       e.preventDefault();
+    });
+
+    delegate(this.element, 'click', '.post__like', (e) => {
+      this.toggleLike();
     });
   }
 }
