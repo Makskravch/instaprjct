@@ -1,7 +1,8 @@
 {{> header}}
 <div class="container-fluid">
 
-  <div class="container">
+  {{#with profile}}
+  <div class="profile">
     <div class="u-mb-4">
       <a class="btn btn-default btn-sm" href="/profile">
         <i class="fa fa-arrow-left"></i>
@@ -9,183 +10,180 @@
       </a>
     </div>
 
-    {{#with profile}}
-    <div class="profile">
-      <div class="profile__left">
+    <div class="profile__left">
 
-        <form class="profile-picture" id="profile-picture">
-          <div class="profile-picture__picture" {{#if photoURL}}style="background-image: url('{{ photoURL }}')"{{/if}}>
-            <label class="profile-picture__trigger" title="Change picture">
-              <span>Choose a new picture</span>
-              <input type="file" name="picture" accept="image/*">
-            </label>
+      <form class="profile-picture" id="profile-picture">
+        <div class="profile-picture__picture" {{#if photoURL}}style="background-image: url('{{ photoURL }}')"{{/if}}>
+          <label class="profile-picture__trigger" title="Change picture">
+            <span>Choose a new picture</span>
+            <input type="file" name="picture" accept="image/*">
+          </label>
+        </div>
+
+        <div class="profile-picture__error alert alert-danger"></div>
+
+        <div class="profile-picture__actions f f-gap-2 f-align-1-2">
+          <button class="btn btn-success btn-sm btn-block" data-action="save">
+            <i class="fa fa-upload"></i> Save
+          </button>
+
+          <button class="btn btn-danger btn-sm btn-block u-my-0" data-action="cancel">
+            <i class="fa fa-ban"></i> Cancel
+          </button>
+        </div>
+
+        <div class="progress">
+          <div class="progress-bar progress-bar-success progress-bar-striped active"></div>
+        </div>
+      </form>
+
+    </div>
+
+    <div class="profile__body">
+
+      <div class="profile__errors alert alert-danger" hidden></div>
+
+      <form class="form panel panel-default" id="public-info" novalidate>
+        <header class="panel-heading">
+          <h3 class="panel-title">Public information</h3>
+        </header>
+
+        <div class="panel-body">
+
+          <div class="form-group">
+            <label>Username</label>
+            <div class="form-control"readonly>{{ username }}</div>
           </div>
 
-          <div class="profile-picture__error alert alert-danger"></div>
-
-          <div class="profile-picture__actions f f-gap-2 f-align-1-2">
-            <button class="btn btn-success btn-sm btn-block" data-action="save">
-              <i class="fa fa-upload"></i> Save
-            </button>
-
-            <button class="btn btn-danger btn-sm btn-block u-my-0" data-action="cancel">
-              <i class="fa fa-ban"></i> Cancel
-            </button>
+          <div class="form-group">
+            <label>Display Name</label>
+            <input
+              type="text"
+              name="displayName"
+              class="form-control"
+              value="{{ displayName }}">
           </div>
 
-          <div class="progress">
-            <div class="progress-bar progress-bar-success progress-bar-striped active"></div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input
+              type="tel"
+              name="phoneNumber"
+              class="form-control"
+              value="{{ phoneNumber }}">
           </div>
-        </form>
 
-      </div>
+          <div class="form-group">
+            <label>About me</label>
+            <textarea
+              class="form-control"
+              name="about">{{ about }}</textarea>
+          </div>
 
-      <div class="profile__body">
+          <hr>
 
-        <div class="profile__errors alert alert-danger" hidden></div>
-
-        <form class="form panel panel-default" id="public-info" novalidate>
-          <header class="panel-heading">
-            <h3 class="panel-title">Public information</h3>
-          </header>
-
-          <div class="panel-body">
-
-            <div class="form-group">
-              <label>Username</label>
-              <div class="form-control"readonly>{{ username }}</div>
-            </div>
-
-            <div class="form-group">
-              <label>Display Name</label>
+          <div class="form-group">
+            <label>Twitter</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-twitter"></i></span>
               <input
                 type="text"
-                name="displayName"
+                name="social[twitter]"
                 class="form-control"
-                value="{{ displayName }}">
+                value="{{ social.twitter }}">
             </div>
-
-            <div class="form-group">
-              <label>Phone</label>
-              <input
-                type="tel"
-                name="phoneNumber"
-                class="form-control"
-                value="{{ phoneNumber }}">
-            </div>
-
-            <div class="form-group">
-              <label>About me</label>
-              <textarea
-                class="form-control"
-                name="about">{{ about }}</textarea>
-            </div>
-
-            <hr>
-
-            <div class="form-group">
-              <label>Twitter</label>
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-twitter"></i></span>
-                <input
-                  type="text"
-                  name="social[twitter]"
-                  class="form-control"
-                  value="{{ social.twitter }}">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Facebook</label>
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-facebook"></i></span>
-                <input
-                  type="text"
-                  name="social[facebook]"
-                  class="form-control"
-                  value="{{ social.facebook }}">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Vkontakte</label>
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-vk"></i></span>
-                <input
-                  type="text"
-                  name="social[vkontakte]"
-                  class="form-control"
-                  value="{{ social.vkontakte }}">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label> Personal website</label>
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-globe"></i></span>
-                <input
-                  type="text"
-                  name="social[website]"
-                  class="form-control"
-                  value="{{ social.website }}">
-              </div>
-            </div>
-
           </div>
-          <footer class="panel-footer">
-            {{> form-submit btn-text="Update"}}
-          </footer>
-        </form>
 
-        {{!-- <form class="panel panel-default" id="change-password">
-          <header class="panel-heading">
-            <h3 class="panel-title">Password</h3>
-          </header>
-          <div class="panel-body">
-
-            <div class="form-group">
-              <label>Primary Email</label>
+          <div class="form-group">
+            <label>Facebook</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-facebook"></i></span>
               <input
-                type="email"
-                name="email"
+                type="text"
+                name="social[facebook]"
                 class="form-control"
-                value="{{ email }}"
-                readonly>
+                value="{{ social.facebook }}">
             </div>
-
-            <div class="form-group">
-              <label>Old password</label>
-              <input
-                type="password"
-                name="password"
-                class="form-control">
-            </div>
-
-            <div class="form-group">
-              <label>New password</label>
-              <input
-                type="password"
-                name="password"
-                class="form-control">
-            </div>
-
-            <div class="form-group">
-              <label>Confirm new password</label>
-              <input
-                type="password"
-                name="password"
-                class="form-control">
-            </div>
-
           </div>
-          <footer class="panel-footer">
-            {{> form-submit btn-text="Change password"}}
-          </footer>
-        </form> --}}
 
-      </div>
+          <div class="form-group">
+            <label>Vkontakte</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-vk"></i></span>
+              <input
+                type="text"
+                name="social[vkontakte]"
+                class="form-control"
+                value="{{ social.vkontakte }}">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label> Personal website</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-globe"></i></span>
+              <input
+                type="text"
+                name="social[website]"
+                class="form-control"
+                value="{{ social.website }}">
+            </div>
+          </div>
+
+        </div>
+        <footer class="panel-footer">
+          {{> form-submit btn-text="Update"}}
+        </footer>
+      </form>
+
+      {{!-- <form class="panel panel-default" id="change-password">
+        <header class="panel-heading">
+          <h3 class="panel-title">Password</h3>
+        </header>
+        <div class="panel-body">
+
+          <div class="form-group">
+            <label>Primary Email</label>
+            <input
+              type="email"
+              name="email"
+              class="form-control"
+              value="{{ email }}"
+              readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Old password</label>
+            <input
+              type="password"
+              name="password"
+              class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label>New password</label>
+            <input
+              type="password"
+              name="password"
+              class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label>Confirm new password</label>
+            <input
+              type="password"
+              name="password"
+              class="form-control">
+          </div>
+
+        </div>
+        <footer class="panel-footer">
+          {{> form-submit btn-text="Change password"}}
+        </footer>
+      </form> --}}
+
     </div>
-    {{/with}}
   </div>
+  {{/with}}
 
 </div>

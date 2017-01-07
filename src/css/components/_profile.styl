@@ -2,21 +2,22 @@
   $this = selector()
   $pic-size = 200px
 
-  f-align(1, 1)
   max-width 800px
   margin auto
+  clearfix()
 
   &__left
+    float left
     text-align center
     flex 0 1 auto
-    margin-right 20px
-    max-width $pic-size
+    width $pic-size
 
     .btn-block
       margin-top 0
 
   &__body
-    flex 1 0 0%
+    float right
+    width 800px - $pic-size - 20px
 
   &__pic
     position relative
