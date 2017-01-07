@@ -64,10 +64,10 @@ const isEmptyObject = (object) =>
  */
 const delegate = (target, type, selector, handler, capture) => {
   const dispatchEvent = (event) => {
-    console.time('delegate');
+    // console.time('delegate');
     let targetElement = event.target;
 
-    while (targetElement !== target ) {
+    while (targetElement && targetElement !== target ) {
       if (targetElement.matches(selector)) {
         event.delegateTarget = event.delegateTarget || targetElement;
         handler.call(targetElement, event);
@@ -75,7 +75,7 @@ const delegate = (target, type, selector, handler, capture) => {
       }
       targetElement = targetElement.parentNode;
     }
-    console.timeEnd('delegate');
+    // console.timeEnd('delegate');
   };
 
   target.addEventListener(type, dispatchEvent, !!capture);
