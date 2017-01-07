@@ -6,24 +6,20 @@
         <span class="sr-only">Instaprjct</span>
       </a>
       {{#if user}}
-      <a href="/add" class="btn btn-default btn-xs">
+      <a href="/add" class="btn btn-default btn-sm">
         <i class="fa fa-plus"></i>
         <span>Add photo</span>
       </a>
       {{/if}}
     </div>
 
-    {{#if user}}
+    {{#if profile}}
     <div class="header-user dropdown">
       <div class="header-user__main" data-toggle="dropdown">
-        {{#if user.photoURL}}
-        <span class="header-user__pic" style="background-image:url('{{ user.photoURL }}')"></span>
-        {{/if}}
-        {{#if user.displayName}}
-        {{ user.displayName }}
-        {{else}}
-        {{ user.email }}
-        {{/if}}
+        <span class="header-user__pic"
+              {{#if profile.photoURL}}style="background-image:url('{{ profile.photoURL }}')"{{/if}}>
+        </span>
+        {{ profile.username }}
         <span class="caret"></span>
       </div>
 
