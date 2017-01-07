@@ -7,85 +7,195 @@ function signup(ctx, next) {
 
   const auth            = firebase.auth();
   const signupForm      = document.forms['signup-form'];
-  const submitBtn       = qs('[type="submit"]', signupForm);
-  const errorsContainer = qs('#errors', signupForm);
+  // const submitBtn       = qs('[type="submit"]', signupForm);
+  // const errorsContainer = qs('#errors', signupForm);
 
-  function renderError(errors = []) {
-    return [].concat(errors).map(err => {
-      return `
-        <li class="list-group-item list-group-item-danger">
-          <span>${err}</span>
-        </li>
-      `;
-    }).join('');
+  new VForm(signupForm, {
+    fields: {
+      'email': {
+        validate: ['required', 'email']
+      },
+      'username': {
+        validate: ['required', 'minLength[3]', 'maxLength[30]'],
+        customValidator: (val) => {
+          return /^[a-zA-Z0-9_]+$/.test(val)
+            || 'Username can contain only letters and numbers';
+        }
+      },
+      'displayName': {
+        validate: 'maxLength[100]'
+      },
+      'password': {
+        validate: ['required', 'minLength[6]']
+      },
+      'passwordConfirm': {
+        validate: 'required',
+        customValidator: (val) => {
+          return val === signupForm.elements['password'].value
+            || 'Wrong value. Must be the same as in "Password" field';
+        }
+      }
+    },
+    onSubmit: (...props) => console.log('onSubmit', props),
+    onError: (...props) => console.log('onError', props),
+    onValid: submit
+  });
+
+  /**
+   * @param  {VForm} f - VForm class instance
+   * @return {Void}
+   */
+  function submit(f) {
+    const formData = f.serialize();
+    const { username } = formData;
+
+    f.setLoadingState();
+
+    checkIfUserExist(username,
+      // if not exist create new
+      () => createNewUser(f, formData),
+      // if already exist
+      () => {
+        f.resetState().setErrorState();
+        alert(`Username "${username}" is already in use. Please, try again with another name.`);
+      }
+    ).catch(err => {
+      console.log(err);
+      f.resetState().setErrorState();
+    });
   }
 
-  function showErrors(errors) {
-    // render all error messages
-    errorsContainer.innerHTML = renderError(errors);
-    // show error container
-    errorsContainer.hidden = false;
-  }
-
-  function hideErrors(errorName) {
-    errorsContainer.innerHTML = '';
-    errorsContainer.hidden = true;
-  }
-
-  function setLoadingState() {
-    signupForm.classList.add('is-loading');
-    submitBtn.setAttribute('disabled', true);
-  }
-
-  function unsetLoadingState() {
-    signupForm.classList.remove('is-loading');
-    submitBtn.removeAttribute('disabled');
-  }
-
-  function onUserCreated(user) {
-    const usersRef = firebase.database().ref(`users/${user.uid}`);
-    const userData = pick(user, ['uid', 'email', 'displayName', 'photoURL']);
-    usersRef.set(userData)
-      .then(() => {
-        user.sendEmailVerification();
-        page.redirect('/profile');
+  /**
+   * @param  {string} username
+   * @param  {Function} cbNo  - Callback if user with given username not exist
+   * @param  {Function} cbYes - Callback if user with given username exist
+   * @return {Void}
+   */
+  function checkIfUserExist(username, cbNo = noop, cbYes = noop) {
+    return firebase
+      .database()
+      .ref('users')
+      .orderByChild('username')
+      .equalTo(username)
+      .once('value', snapshot => {
+        const val = snapshot.val();
+        val ? cbYes(val) : cbNo();
       });
   }
 
-  function onUserCreationError(error) {
-    unsetLoadingState();
-    showErrors(error.message);
+  function createNewUser(f, data) {
+    console.log('creation');
+    const { email, password, username, displayName } = data;
+
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      // update firebase internal user's displayName
+      .then(user => {
+        console.log('user created 1', user);
+        user.updateProfile({ displayName });
+        return user;
+      })
+      // create user in our database
+      .then(user => {
+        console.log('user created 2', user);
+        const { uid, photoURL } = user;
+        return firebase
+          .database()
+          .ref(`users/${uid}`)
+          .set({ uid, username, displayName, photoURL });
+      })
+      // when user was successfull created
+      .then(() => {
+        f.resetState().setSuccessState();
+        setTimeout(() => {
+          f.element.reset();
+          page.redirect('/');
+        }, 1000);
+      })
+      // when something going wrong
+      .catch(err => {
+        console.log(err);
+        f.resetState().setErrorState();
+        alert('Oops!:)\n' + err.message || 'Seems like something is broken. Please, try again.');
+      });
   }
 
-  signupForm.addEventListener('submit', (e) => {
-    const errors = [];
-    const form   = e.target;
-    // eslint-disable-next-line camelcase
-    const { email, password, password_confirm: confirm } = form.elements;
+  // function renderError(errors = []) {
+  //   return [].concat(errors).map(err => {
+  //     return `
+  //       <li class="list-group-item list-group-item-danger">
+  //         <span>${err}</span>
+  //       </li>
+  //     `;
+  //   }).join('');
+  // }
 
-    e.preventDefault();
+  // function showErrors(errors) {
+  //   // render all error messages
+  //   errorsContainer.innerHTML = renderError(errors);
+  //   // show error container
+  //   errorsContainer.hidden = false;
+  // }
 
-    if (email.value.indexOf('@') === -1) {
-      errors.push('Email is invalid');
-    }
+  // function hideErrors(errorName) {
+  //   errorsContainer.innerHTML = '';
+  //   errorsContainer.hidden = true;
+  // }
 
-    if (password.value.length < 6) {
-      errors.push('Password must be at least 6 characters');
-    }
+  // function setLoadingState() {
+  //   signupForm.classList.add('is-loading');
+  //   submitBtn.setAttribute('disabled', true);
+  // }
 
-    if (password.value !== confirm.value) {
-      errors.push('Wrong password');
-    }
+  // function unsetLoadingState() {
+  //   signupForm.classList.remove('is-loading');
+  //   submitBtn.removeAttribute('disabled');
+  // }
 
-    if (errors.length) {
-      return showErrors(errors);
-    }
+  // function onUserCreated(user) {
+  //   const usersRef = firebase.database().ref(`users/${user.uid}`);
+  //   const userData = pick(user, ['uid', 'email', 'displayName', 'photoURL']);
+  //   usersRef.set(userData)
+  //     .then(() => {
+  //       user.sendEmailVerification();
+  //       page.redirect('/profile');
+  //     });
+  // }
 
-    setLoadingState();
-    hideErrors();
-    auth
-      .createUserWithEmailAndPassword(email.value, password.value)
-      .then(onUserCreated)
-      .catch(onUserCreationError);
-  });
+  // function onUserCreationError(error) {
+  //   unsetLoadingState();
+  //   showErrors(error.message);
+  // }
+
+  // signupForm.addEventListener('submit', (e) => {
+  //   const errors = [];
+  //   const form   = e.target;
+  //   // eslint-disable-next-line camelcase
+  //   const { email, password, password_confirm: confirm } = form.elements;
+
+  //   e.preventDefault();
+
+  //   if (email.value.indexOf('@') === -1) {
+  //     errors.push('Email is invalid');
+  //   }
+
+  //   if (password.value.length < 6) {
+  //     errors.push('Password must be at least 6 characters');
+  //   }
+
+  //   if (password.value !== confirm.value) {
+  //     errors.push('Wrong password');
+  //   }
+
+  //   if (errors.length) {
+  //     return showErrors(errors);
+  //   }
+
+  //   setLoadingState();
+  //   hideErrors();
+  //   auth
+  //     .createUserWithEmailAndPassword(email.value, password.value)
+  //     .then(onUserCreated)
+  //     .catch(onUserCreationError);
+  // });
 }
