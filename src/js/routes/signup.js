@@ -3,7 +3,7 @@ function signup(ctx, next) {
     return page.redirect('/profile');
   }
 
-  render('signup');
+  render('signup', ctx);
 
   const auth       = firebase.auth();
   const signupForm = document.forms['signup-form'];

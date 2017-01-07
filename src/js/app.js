@@ -18,11 +18,8 @@
   const { location, history, templates } = window;
   const rootElement = qs('#root');
 
-  function render(tplName, data = {}) {
-    const user = firebase.auth().currentUser;
-    const userData = user ? user.toJSON() : null;
-    data = Object.assign(data, { user: userData });
-    rootElement.innerHTML = templates[tplName](data);
+  function render(tplName, ...data) {
+    rootElement.innerHTML = templates[tplName](Object.assign({}, ...data));
   }
 
   function render404() {
@@ -34,8 +31,8 @@
   page('/login', login);
   page('/logout', logout);
   page('/signup', signup);
-  page('/profile', fetchProfile, profile);
-  page('/profile/edit', fetchProfile, profileEdit);
+  page('/profile', profile);
+  page('/profile/edit', profileEdit);
   page('/add', add);
   page('*', render404);
 

@@ -3,7 +3,7 @@ function login(ctx, next) {
     return page.redirect('/profile');
   }
 
-  render('login');
+  render('login', ctx);
 
   console.log(ctx);
   const loginForm = document.forms['login-form'];

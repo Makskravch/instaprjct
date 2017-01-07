@@ -6,11 +6,22 @@ const unlockedPaths = [
 
 function auth(ctx, next) {
   const user = firebase.auth().currentUser;
+
+  render('preloader');
+
   if (user) {
-    ctx.user = user.toJSON();
-    return next();
+    firebase
+      .database()
+      .ref(`users/${user.uid}`)
+      .once('value')
+      .then(snapshot => {
+        ctx.user = ctx.profile = snapshot.val();
+        next();
+      })
+      .catch(err => console.log(err));
   } else if (!unlockedPaths.includes(ctx.pathname)) {
-    page.redirect('/login');
+    return page.redirect('/login');
+  } else {
+    next();
   }
-  next();
 }

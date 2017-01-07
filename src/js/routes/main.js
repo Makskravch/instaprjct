@@ -1,5 +1,5 @@
 function main(ctx, next) {
-  render('main');
+  render('main', ctx);
 
   if (!ctx.user) {
     return;

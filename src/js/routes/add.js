@@ -1,5 +1,5 @@
 function add(ctx, next) {
-  render('add', { filters: Editor.FILTERS });
+  render('add', ctx, { filters: Editor.FILTERS });
 
   new Editor('#editor', {
     onSave: () => {

@@ -1,7 +1,5 @@
 function profileEdit(ctx, next) {
-  render('profile-edit', {
-    profile: ctx.profile
-  });
+  render('profile-edit', ctx);
 
   // init picture uploader
   new ProfilePictureUploader('#profile-picture');
