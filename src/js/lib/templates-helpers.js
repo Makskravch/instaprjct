@@ -40,7 +40,6 @@
   Handlebars.registerHelper('sortBy', sortBy);
 
   Handlebars.registerHelper('ifCond', (v1, operator, v2, options) => {
-    console.log(v1, v2);
     switch (operator) {
       case '==':
         // eslint-disable-next-line eqeqeq
