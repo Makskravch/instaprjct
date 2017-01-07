@@ -36,7 +36,14 @@ const VForm = (function() {
         .reduce((acc, next) => acc.concat(next), [])
         .filter(val => val !== true);
 
-      call(onError, this, errors);
+      call(
+        onError,
+        this,
+        this.fields.map(f => ({
+          el: f.control,
+          errors: f.errors
+        }))
+      );
       if (autoValidate) this.setInvalidState();
       return errors;
     }
