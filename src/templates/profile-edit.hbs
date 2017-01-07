@@ -2,6 +2,13 @@
 <div class="container-fluid">
 
   <div class="container">
+    <div class="u-mb-4">
+      <a class="btn btn-default btn-sm" href="/profile">
+        <i class="fa fa-arrow-left"></i>
+        <span>Profile</span>
+      </a>
+    </div>
+
     {{#with profile}}
     <div class="profile">
       <div class="profile__left">
@@ -45,21 +52,17 @@
           <div class="panel-body">
 
             <div class="form-group">
+              <label>Username</label>
+              <div class="form-control"readonly>{{ username }}</div>
+            </div>
+
+            <div class="form-group">
               <label>Display Name</label>
               <input
                 type="text"
                 name="displayName"
                 class="form-control"
                 value="{{ displayName }}">
-            </div>
-
-            <div class="form-group">
-              <label>Public Email</label>
-              <input
-                type="email"
-                name="publicEmail"
-                class="form-control"
-                value="{{ publicEmail }}">
             </div>
 
             <div class="form-group">
