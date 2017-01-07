@@ -1,8 +1,12 @@
 function fetchProfile(ctx, next) {
   render('preloader');
-  const dbRef = firebase.database().ref(`users/${ctx.user.uid}`);
-  dbRef.once('value').then((snapshot) => {
-    ctx.profile = snapshot.val();
-    next();
-  });
+  firebase
+    .database()
+    .ref(`users/${ctx.user.uid}`)
+    .once('value')
+    .then((snapshot) => {
+      ctx.profile = snapshot.val();
+      next();
+    })
+    .catch(err => console.log(err));
 }
