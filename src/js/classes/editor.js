@@ -55,22 +55,22 @@ class Editor {
     this.triggerReset.style.display = 'none';
   }
 
+  // get caption and add it to the post as first comment
   _getComments() {
     const caption = this.caption.value.trim();
 
     if (!caption) return {};
 
-    const user      = firebase.auth().currentUser;
+    const { uid, username } = this.props.currentUser;
     const commentId = generateID('comment-');
 
     return {
       [commentId]: {
         id: commentId,
-        author: user.displayName,
-        authorId: user.uid,
         value: caption,
-        created: moment().toJSON(),
-        edited: false
+        author: username,
+        authorId: uid,
+        created: moment().toJSON()
       }
     };
   }
@@ -209,6 +209,7 @@ class Editor {
 }
 
 Editor.defaults = {
+  currentUser: {},
   activeClass: 'is-active',
   busyClass: 'is-busy',
   hasImageClass: 'has-image',
