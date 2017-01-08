@@ -20,7 +20,7 @@ function login(ctx, next) {
       firebase.auth()
         .signInWithEmailAndPassword(email, password)
         .then(() => {
-          page.redirect('/profile');
+          page.redirect('/');
         })
         .catch(defaultErrorHandler);
     }
