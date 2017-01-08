@@ -27,6 +27,7 @@ const errorHandler = (title = 'Error') => plumber({
   })
 });
 
+const isProd = gutil.env.prod;
 
 gulp.task('server', () => {
   server.init({
@@ -57,7 +58,8 @@ gulp.task('styles', () => {
     .pipe(sourcemaps.init())
     .pipe(stylus({
       paths: ['src/css', 'node_modules'],
-      'include css': true
+      'include css': true,
+      compress: isProd
     }))
     .pipe(postcss([autoprefixer()]))
     .pipe(sourcemaps.write('./'))
