@@ -6,13 +6,12 @@ class Post {
   constructor(post, props = {}) {
     this.props       = Object.assign({}, Post.defaults, props);
     this.tpl         = Handlebars.partials.post;
-    this.currentUser = firebase.auth().currentUser.toJSON();
+    this.currentUser = this.props.currentUser;
     this.liked       = false; // is post liked by currentUser?
 
     this._setupDomElement();
     this._setupDbRef(post);
     this._bindEvents();
-    // this.render();
   }
 
   render() {
@@ -34,16 +33,15 @@ class Post {
 
   addComment(value = '') {
     const id = generateID('comment-');
-    const user = this.currentUser;
+    const { uid, username } = this.currentUser;
     this.dbRef.child(`comments/${id}`).set({
-      id: id,
-      author: user.displayName,
-      authorId: user.uid,
+      id,
       value,
-      created: moment().toJSON(),
-      edited: false
-    });
-    // .then(() => this.render());
+      author: username,
+      authorId: uid,
+      created: moment().toJSON()
+    })
+    .catch(defaultErrorHandler);
   }
 
   removeComment(id) {
@@ -56,8 +54,7 @@ class Post {
       return alert('Only author of comment can delete it');
     }
     if (confirm('Are you sure you want to delete this comment?')) {
-      this.dbRef.child(`comments/${id}`).remove();
-        // .then(() => this.render());
+      this.dbRef.child(`comments/${id}`).remove().catch(defaultErrorHandler);
     }
   }
 
@@ -67,7 +64,6 @@ class Post {
 
     const done = (bool) => {
       this.liked = bool;
-      // this.render();
     };
 
     if (this.liked) {
@@ -118,11 +114,10 @@ class Post {
     const id = typeof post === 'string' ? post : post.id;
     this.dbRef = firebase.database().ref(`posts/${id}`);
     this.dbRef.on('value', this._onDataRetrieved.bind(this));
-    // this.dbRef.on('child_changed', this._onDataChanged.bind(this));
   }
 
   _bindEvents() {
-    delegate(this.element, 'submit', 'form', (e) => {
+    delegate(this.element, 'submit', '.post__add-comment', (e) => {
       const value = e.delegateTarget.elements['comment'].value.trim();
       if (value) this.addComment(value);
       e.preventDefault();
@@ -136,10 +131,12 @@ class Post {
       e.preventDefault();
     });
 
-    delegate(this.element, 'click', '.post__like', (e) => {
+    delegate(this.element, 'click', '.post__like', () => {
       this.toggleLike();
     });
   }
 }
 
-Post.defaults = {};
+Post.defaults = {
+  currentUser: {}
+};

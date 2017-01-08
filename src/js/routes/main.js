@@ -15,7 +15,7 @@ function main(ctx, next) {
       const entries = snapshot.val();
       if (!entries) return;
       sortBy(entries, 'created').forEach(entry => {
-        const post = new Post(entry);
+        const post = new Post(entry, { currentUser: ctx.user });
         feed.insertBefore(post.getElement(), feed.firstElementChild);
       });
     });
