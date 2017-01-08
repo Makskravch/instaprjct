@@ -164,7 +164,13 @@ const sortBy = (collection = [], propName, invert) => {
   return sorted;
 };
 
+/**
+ * Default error handler for async network actions
+ *
+ * @param  {Error} err
+ * @return {Void}
+ */
 const defaultErrorHandler = err => {
   console.log(err);
-  alert('Oops!\n ' + err.message || 'Something going wrong.');
+  alert('Oops!:)\n' + err.message || 'Seems like something is broken. Please, try again.');
 };

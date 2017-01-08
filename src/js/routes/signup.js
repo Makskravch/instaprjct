@@ -34,8 +34,6 @@ function signup(ctx, next) {
         }
       }
     },
-    onSubmit: (...props) => console.log('onSubmit', props),
-    onError: (...props) => console.log('onError', props),
     onValid: submit
   });
 
@@ -58,8 +56,8 @@ function signup(ctx, next) {
         alert(`Username "${username}" is already in use. Please, try again with another name.`);
       }
     ).catch(err => {
-      console.log(err);
       f.resetState().setErrorState();
+      defaultErrorHandler(err);
     });
   }
 
@@ -94,13 +92,12 @@ function signup(ctx, next) {
       .createUserWithEmailAndPassword(email, password)
       // update firebase internal user's displayName
       .then(user => {
-        console.log('user created 1', user);
         user.updateProfile({ displayName });
+        user.sendEmailVerification();
         return user;
       })
       // create user in our database
       .then(user => {
-        console.log('user created 2', user);
         const { uid, photoURL } = user;
         return firebase
           .database()
@@ -117,9 +114,8 @@ function signup(ctx, next) {
       })
       // when something going wrong
       .catch(err => {
-        console.log(err);
         f.resetState().setErrorState();
-        alert('Oops!:)\n' + err.message || 'Seems like something is broken. Please, try again.');
+        defaultErrorHandler(err);
       });
   }
 }
