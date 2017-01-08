@@ -163,3 +163,8 @@ const sortBy = (collection = [], propName, invert) => {
   console.timeEnd('sort');
   return sorted;
 };
+
+const defaultErrorHandler = err => {
+  console.log(err);
+  alert('Oops!\n ' + err.message || 'Something going wrong.');
+};
