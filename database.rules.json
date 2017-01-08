@@ -1,0 +1,16 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null",
+    "users": {
+      ".indexOn": "username",
+      ".read": true,
+      "$uid": {
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "posts": {
+      ".indexOn": ["created", "author"]
+    }
+  }
+}
