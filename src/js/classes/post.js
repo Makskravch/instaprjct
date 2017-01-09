@@ -9,6 +9,10 @@ class Post {
     this.currentUser = this.props.currentUser;
     this.liked       = false; // is post liked by currentUser?
 
+    this._onDataRetrieved = this._onDataRetrieved.bind(this);
+    this.toggleLike       = this.toggleLike.bind(this);
+    this.delete           = this.delete.bind(this);
+
     this._setupDomElement();
     this._setupDbRef(post);
     this._bindEvents();
@@ -21,9 +25,11 @@ class Post {
         author: this.author,
         currentUser: this.currentUser,
         liked: this.liked,
-        likesCount: Object.keys((this.data && this.data.likes) || {}).length
+        likesCount: Object.keys((this.data && this.data.likes) || {}).length,
+        isOwner: this.data.author === this.currentUser.uid
       })
     );
+    console.log(this);
     console.timeEnd('render');
   }
 
@@ -78,6 +84,30 @@ class Post {
     }
   }
 
+  delete() {
+    if (this.data.author !== this.currentUser.uid) {
+      return console.log('Only owner can delete this post');
+    }
+
+    if (!confirm('Are you sure?')) {
+      return;
+    }
+
+    // remove all listeners from db reference
+    this.dbRef.off();
+
+    firebase.Promise.all([
+      // remove entry in database
+      this.dbRef.remove(),
+      // delete image file from storage
+      firebase.storage().ref(this.data.storagePath).delete()
+    ])
+    .then(() => {
+      this.element.parentNode.removeChild(this.element);
+    })
+    .catch(defaultErrorHandler);
+  }
+
   _setupDomElement() {
     this.element = document.createElement('article');
     this.element.classList = 'post';
@@ -113,7 +143,7 @@ class Post {
   _setupDbRef(post) {
     const id = typeof post === 'string' ? post : post.id;
     this.dbRef = firebase.database().ref(`posts/${id}`);
-    this.dbRef.on('value', this._onDataRetrieved.bind(this));
+    this.dbRef.on('value', this._onDataRetrieved);
   }
 
   _bindEvents() {
@@ -131,9 +161,8 @@ class Post {
       e.preventDefault();
     });
 
-    delegate(this.element, 'click', '.post__like', () => {
-      this.toggleLike();
-    });
+    delegate(this.element, 'click', '.post__like', this.toggleLike);
+    delegate(this.element, 'click', '.post__delete', this.delete);
   }
 }
 

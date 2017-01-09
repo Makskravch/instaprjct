@@ -44,6 +44,12 @@
     <form class="post__add-comment">
       <input type="text" name="comment" placeholder="Add a comment...">
     </form>
+    {{#if isOwner}}
+    <button class="post__delete btn btn-danger btn-xs" title="Delete">
+      <span class="fa fa-trash"></span>
+      <span>Delete</span>
+    </button>
+    {{/if}}
   </div>
 </footer>
 {{!-- </article> --}}
