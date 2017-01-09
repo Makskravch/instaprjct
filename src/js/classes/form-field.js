@@ -1,7 +1,3 @@
-// as example
-// const EMAIL_RE = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
-
-
 const FormField = (function() {
 
   const EMAIL_RE = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -47,7 +43,7 @@ const FormField = (function() {
       this.element   = isDomElement(element) ? element : qs(element);
       this.props     = Object.assign({}, FormField.defaults, props);
       this.rules     = [];
-      this.errors    = [],
+      this.errors    = [];
       this._required = false;
       this._isValid  = null;
       this._hasError = null;
@@ -100,11 +96,11 @@ const FormField = (function() {
       this.element.classList.add(this.props.errorClass);
 
       if (this.errorElement) {
-        this.element.appendChild(this.errorElement);
         // show all errors
         // this.errorElement.innerHTML = this.errors.join('<br>');
         // show only first error
         this.errorElement.innerHTML = this.errors[0];
+        this.element.appendChild(this.errorElement);
       }
 
       this._hasError = true;
@@ -126,8 +122,8 @@ const FormField = (function() {
 
       // unmount error element if mounted
       if (this.errorElement && this.errorElement.parentNode) {
-        this.errorElement.innerHTML = '';
         this.element.removeChild(this.errorElement);
+        this.errorElement.innerHTML = '';
       }
 
       this.errors = [];
