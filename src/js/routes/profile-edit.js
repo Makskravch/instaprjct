@@ -5,11 +5,12 @@ function profileEdit(ctx, next) {
   new ProfilePictureUploader('#profile-picture');
 
   const publicInfoForm     = document.forms['public-info'];
+  const deleteProfileForm  = document.forms['delete-profile'];
   const PHONE_VALIDATOR_RE = /^\+?\d{10,12}$/;
+  const user               = firebase.auth().currentUser;
+  const profileDbRef       = firebase.database().ref(`users/${user.uid}`);
 
   function updateUserInfo(newData) {
-    const user  = firebase.auth().currentUser;
-    const dbRef = firebase.database().ref(`users/${user.uid}`);
     const info  = pick(newData, ['displayName', 'phoneNumber', 'social', 'about']);
     const { displayName } = info;
 
@@ -21,7 +22,7 @@ function profileEdit(ctx, next) {
       user.updateProfile({ displayName }).catch(err => console.log(err));
     }
 
-    return dbRef.transaction((data) => Object.assign({}, data, info));
+    return profileDbRef.transaction((data) => Object.assign({}, data, info));
   }
 
   function submitForm(f) {
@@ -43,6 +44,7 @@ function profileEdit(ctx, next) {
       });
   }
 
+  // profile update form
   new VForm(publicInfoForm, {
     onValid: submitForm,
     fields: {
@@ -58,4 +60,32 @@ function profileEdit(ctx, next) {
       }
     }
   });
+
+  // account deletion form
+  new VForm('#delete-profile', {
+    fields: {
+      'usernameConfirm': {
+        validate: 'required',
+        customValidator(val) {
+          return val === deleteProfileForm.elements['username'].value
+            || 'Wrong username';
+        }
+      }
+    },
+    onValid(f) {
+      f.setLoadingState();
+      if (!confirm('Are you sure? Last chance to change your mind.')) {
+        return f.resetState();
+      }
+      deleteAccount().then(() => page.redirect('/'));
+    }
+  });
+
+  function deleteAccount() {
+    return firebase.Promise.all([
+      user.delete(),
+      profileDbRef.remove()
+    ])
+    .catch(defaultErrorHandler);
+  }
 }

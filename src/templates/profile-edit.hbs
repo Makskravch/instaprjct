@@ -132,55 +132,38 @@
 
         </div>
         <footer class="panel-footer">
-          {{> form-submit btn-text="Update"}}
+          <div class="f f-align-13-2">
+            {{> form-submit btn-text="Save"}}
+          </div>
         </footer>
       </form>
 
-      {{!-- <form class="panel panel-default" id="change-password">
+      <form class="panel panel-danger" id="delete-profile">
         <header class="panel-heading">
-          <h3 class="panel-title">Password</h3>
+          <h3 class="panel-title">
+            Delete account
+          </h3>
         </header>
         <div class="panel-body">
-
-          <div class="form-group">
-            <label>Primary Email</label>
-            <input
-              type="email"
-              name="email"
-              class="form-control"
-              value="{{ email }}"
-              readonly>
+          <p class="text-danger">
+            Attention!!!
+            Once you delete your account, there is no going back.
+            Please be certain.
+          </p>
+          <p>For confirm account deletion you should enter your username into this field:</p>
+          <div class="row">
+            <div class="col-xs-9 u-pr-0">
+              <input type="hidden" value="{{ username }}" name="username">
+              <div class="form-group u-mb-0">
+                <input type="text" class="form-control" name="usernameConfirm">
+              </div>
+            </div>
+            <div class="col-xs-3">
+              <button class="btn btn-danger btn-block">Delete</button>
+            </div>
           </div>
-
-          <div class="form-group">
-            <label>Old password</label>
-            <input
-              type="password"
-              name="password"
-              class="form-control">
-          </div>
-
-          <div class="form-group">
-            <label>New password</label>
-            <input
-              type="password"
-              name="password"
-              class="form-control">
-          </div>
-
-          <div class="form-group">
-            <label>Confirm new password</label>
-            <input
-              type="password"
-              name="password"
-              class="form-control">
-          </div>
-
         </div>
-        <footer class="panel-footer">
-          {{> form-submit btn-text="Change password"}}
-        </footer>
-      </form> --}}
+      </form>
 
     </div>
   </div>
